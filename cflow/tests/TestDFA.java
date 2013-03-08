@@ -34,7 +34,6 @@ public class TestDFA extends TestCase {
 		DFA d1 = new DFA(states, alphabet, transitions, initial_state,
 				accept_states);
 		
-		System.out.println("CHEGUEI AQUI1");
 		assertTrue(d1.match("a.b"));
 		assertTrue(d1.match("a.b.b.b.b.b"));
 		assertFalse(d1.match("a.c"));
@@ -126,7 +125,6 @@ public class TestDFA extends TestCase {
 		d1.set_initial_state("q1");
 		d1.add_accept_state("q2");
 
-		System.out.println("CHEGUEI AQUI2");
 		assertTrue(d1.match("a.b"));
 		assertFalse(d1.match("a.c"));
 		assertFalse(d1.match("j.h.g.r.u.i.g.h.e.r.u.i.h"));
