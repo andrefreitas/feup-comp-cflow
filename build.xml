@@ -1,0 +1,14 @@
+<project name="Cflow" default="cflow-tests" basedir=".">
+	<target name="cflow-tests">
+	    <junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+		        <pathelement location="libs/junit.jar"/>
+				<pathelement location="."/>
+			</classpath>
+	    	<test name="cflow.tests.TestDFA" haltonfailure="no" outfile="tests">
+	    	      <formatter type="plain"/>
+	    	      <formatter type="xml"/>
+			</test>
+	    </junit>
+	</target>
+</project>
