@@ -34,7 +34,7 @@ public class TestDFA extends TestCase {
 		DFA d1 = new DFA(states, alphabet, transitions, initial_state,
 				accept_states);
 		
-		assertTrue(d1.match("a.c"));
+		assertTrue(d1.match("a.b"));
 		assertTrue(d1.match("a.b.b.b.b.b"));
 		assertFalse(d1.match("a.c"));
 		assertFalse(d1.match("j.h.g.r.u.i.g.h.e.r.u.i.h"));
