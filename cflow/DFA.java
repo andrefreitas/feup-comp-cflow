@@ -85,13 +85,11 @@ public class DFA {
 
 		String[] identifiers = string.split("\\.");
 		
-		for(int i = 0; i < identifiers.length; i++)
-			System.out.println("Id " + identifiers[i]);
+	
 
 		String state = initial_state;
 		try {
 			for (int i = 0; i < identifiers.length; i++) {
-				System.out.println("state: " + state);
 				state = get_next_state(state, identifiers[i]);
 
 			}
