@@ -1,2 +1,83 @@
-options{  //LOOKAHEAD = 3;  //FORCE_LA_CHECK = true;}PARSER_BEGIN(DFA_Generator)
-public class DFA_Generator{  public static void main(String args [])  {    new DFA_Generator(System.in);    try    {      System.out.print("Give the expression: ");      DFA_Generator.Start();    }    catch (Exception e)    {      System.out.println("Oops.");      System.out.println(e.getMessage());    }  }}PARSER_END(DFA_Generator)SKIP :{  " "| "\t"| "\r"}TOKEN : {	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >	| < LEFT_PAR : "(" >	| < RIGHT_PAR : ")" >	| < SEPARATOR : ".">	| < ONE_OR_MORE :"+" >	| < ZERO_OR_MORE :"*" >	| < ZERO_OR_ONE :"?" >	| < OR :"|" >	| < NUMBER : (["0"-"9"])+ >	| < LEFT_BRAQ : "{" < NUMBER > >	| < RIGHT_BRAQ : "}" >	| < RIGHT_BRAQ_INT : "," < NUMBER > "}" >	| < RIGHT_BRAQ_NOLIMIT : "," "}" >		| < NLINE : "\n" >  }void Start() :{}{  Expr_Base()	 {		System.out.println("ok");	}  }void Expr_Base():{}{	Expr_Internal()	(< ONE_OR_MORE >	| < ZERO_OR_MORE >	| < ZERO_OR_ONE >	| < LEFT_BRAQ > (< RIGHT_BRAQ > | < RIGHT_BRAQ_INT > | <  RIGHT_BRAQ_NOLIMIT >))?}void Expr_Internal():{}{  < IDENTIFIER >}void Expr_Times():{}{	< LEFT_BRAQ > < NUMBER > < RIGHT_BRAQ > // get number here}void Expr_Times_Interval():{}{	< LEFT_BRAQ > < NUMBER > "," < NUMBER > < RIGHT_BRAQ > // get numbers here}
+
+options
+{
+  LOOKAHEAD = 3;
+  FORCE_LA_CHECK = true;
+}
+
+PARSER_BEGIN(DFA_Generator)
+
+public class DFA_Generator
+{
+  public static void main(String args [])
+  {
+    new DFA_Generator(System.in);
+    try
+    {
+      System.out.print("Give the expression: ");
+      DFA_Generator.Start();
+    }
+    catch (Exception e)
+    {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END(DFA_Generator)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+}
+
+TOKEN : 
+{
+	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >
+	| < LEFT_PAR : "(" >
+	| < RIGHT_PAR : ")" >
+	| < SEPARATOR : ".">
+	| < ONE_OR_MORE :"+" >
+	| < ZERO_OR_MORE :"*" >
+	| < ZERO_OR_ONE :"?" >
+	| < OR :"|" >
+	| < NUMBER : (["0"-"9"])+ >
+	| < LEFT_BRAQ : "{" < NUMBER > >
+	| < RIGHT_BRAQ : "}" >
+	| < RIGHT_BRAQ_INT : "," < NUMBER > "}" >
+	| < RIGHT_BRAQ_NOLIMIT : "," "}" >
+	| < TIMES : < ONE_OR_MORE >
+	| < ZERO_OR_MORE >
+	| < ZERO_OR_ONE >
+	| < LEFT_BRAQ > (< RIGHT_BRAQ > | < RIGHT_BRAQ_INT > | <  RIGHT_BRAQ_NOLIMIT >) >
+	| < NLINE : "\n" >
+  
+}
+
+void Start() :
+{}
+{
+  Expr_Base()
+	 {
+		System.out.println("ok");
+	}  
+}
+
+void Expr_Base():
+{}
+{
+  < IDENTIFIER > (< TIMES >)? ((< SEPARATOR > | < OR >) Expr_Base())?
+  | < LEFT_PAR > Expr_Base() < RIGHT_PAR > (< TIMES >)? Expr_Base()
+}
+
+void Expr_Times():
+{}
+{
+	(< ONE_OR_MORE >
+	| < ZERO_OR_MORE >
+	| < ZERO_OR_ONE >
+	| < LEFT_BRAQ > (< RIGHT_BRAQ > | < RIGHT_BRAQ_INT > | <  RIGHT_BRAQ_NOLIMIT >))?
+}
