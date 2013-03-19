@@ -1,7 +1,7 @@
 
 options
 {
-  LOOKAHEAD = 3;
+  LOOKAHEAD = 2;
   FORCE_LA_CHECK = true;
 }
 
@@ -37,22 +37,14 @@ SKIP :
 TOKEN : 
 {
 	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >
-	| < LEFT_PAR : "(" >
-	| < RIGHT_PAR : ")" >
 	| < SEPARATOR : ".">
+	| < OR :"|" >
 	| < ONE_OR_MORE :"+" >
 	| < ZERO_OR_MORE :"*" >
 	| < ZERO_OR_ONE :"?" >
-	| < OR :"|" >
 	| < NUMBER : (["0"-"9"])+ >
-	| < LEFT_BRAQ : "{" < NUMBER > >
-	| < RIGHT_BRAQ : "}" >
-	| < RIGHT_BRAQ_INT : "," < NUMBER > "}" >
-	| < RIGHT_BRAQ_NOLIMIT : "," "}" >
-	| < TIMES : < ONE_OR_MORE >
-	| < ZERO_OR_MORE >
-	| < ZERO_OR_ONE >
-	| < LEFT_BRAQ > (< RIGHT_BRAQ > | < RIGHT_BRAQ_INT > | <  RIGHT_BRAQ_NOLIMIT >) >
+	| < LEFT_PAR: "(" >
+	| < RIGHT_PAR: ")" >
 	| < NLINE : "\n" >
   
 }
@@ -60,24 +52,22 @@ TOKEN :
 void Start() :
 {}
 {
-  Expr_Base()
+  Expr_Main()
 	 {
 		System.out.println("ok");
 	}  
 }
 
-void Expr_Base():
+//problema a detetar falta de parentesis à esquerda e com chavetas, resto aparentemente ok
+
+void Expr_Main():
 {}
 {
-  < IDENTIFIER > (< TIMES >)? ((< SEPARATOR > | < OR >) Expr_Base())?
-  | < LEFT_PAR > Expr_Base() < RIGHT_PAR > (< TIMES >)? Expr_Base()
+	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > )| < IDENTIFIER >) (Expr_Times())? (("." | "|") Expr_Main())?
 }
 
 void Expr_Times():
 {}
 {
-	(< ONE_OR_MORE >
-	| < ZERO_OR_MORE >
-	| < ZERO_OR_ONE >
-	| < LEFT_BRAQ > (< RIGHT_BRAQ > | < RIGHT_BRAQ_INT > | <  RIGHT_BRAQ_NOLIMIT >))?
+	< ONE_OR_MORE > | < ZERO_OR_MORE > | "{" < NUMBER > ("," (< NUMBER >)? )? "}"
 }
