@@ -45,6 +45,9 @@ TOKEN :
 	| < NUMBER : (["0"-"9"])+ >
 	| < LEFT_PAR: "(" >
 	| < RIGHT_PAR: ")" >
+	| < QUANTIFIER_1: "{" < NUMBER > "}" >
+	| < QUANTIFIER_2: "{" < NUMBER > "," "}" >
+	| < QUANTIFIER_3: "{" < NUMBER > "," < NUMBER > "}" >
 	| < NLINE : "\n" >
   
 }
@@ -52,13 +55,11 @@ TOKEN :
 void Start() :
 {}
 {
-  Expr_Main()
+  Expr_Main() < NLINE >
 	 {
 		System.out.println("ok");
 	}  
 }
-
-//problema a detetar falta de parentesis à esquerda e com chavetas, resto aparentemente ok
 
 void Expr_Main():
 {}
@@ -69,5 +70,5 @@ void Expr_Main():
 void Expr_Times():
 {}
 {
-	< ONE_OR_MORE > | < ZERO_OR_MORE > | "{" < NUMBER > ("," (< NUMBER >)? )? "}"
+	< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >
 }
