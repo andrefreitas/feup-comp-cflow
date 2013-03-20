@@ -1,11 +1,7 @@
-package cflow.tests;
-import cflow.exceptions.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
-
-import cflow.DFA;
 
 import junit.framework.*;
 

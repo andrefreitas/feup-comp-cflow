@@ -1,14 +1,7 @@
-package cflow;
-
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeSet;
-
-import cflow.exceptions.DeadState;
-import cflow.exceptions.InvalidStateException;
-import cflow.exceptions.InvalidTransitionException;
-
 public class DFA {
 
 	private Set<String> states;

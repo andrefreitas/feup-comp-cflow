@@ -1,0 +1,74 @@
+
+options
+{
+  LOOKAHEAD = 2;
+  FORCE_LA_CHECK = true;
+}
+
+PARSER_BEGIN(DFA_Generator)
+
+public class DFA_Generator
+{
+  public static void main(String args [])
+  {
+    new DFA_Generator(System.in);
+    try
+    {
+      System.out.print("Give the expression: ");
+      DFA_Generator.Start();
+    }
+    catch (Exception e)
+    {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+    }
+  }
+}
+
+PARSER_END(DFA_Generator)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+}
+
+TOKEN : 
+{
+	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >
+	| < SEPARATOR : ".">
+	| < OR :"|" >
+	| < ONE_OR_MORE :"+" >
+	| < ZERO_OR_MORE :"*" >
+	| < ZERO_OR_ONE :"?" >
+	| < NUMBER : (["0"-"9"])+ >
+	| < LEFT_PAR: "(" >
+	| < RIGHT_PAR: ")" >
+	| < QUANTIFIER_1: "{" < NUMBER > "}" >
+	| < QUANTIFIER_2: "{" < NUMBER > "," "}" >
+	| < QUANTIFIER_3: "{" < NUMBER > "," < NUMBER > "}" >
+	| < NLINE : "\n" >
+  
+}
+
+void Start() :
+{}
+{
+  Expr_Main() < NLINE >
+	 {
+		System.out.println("ok");
+	}  
+}
+
+void Expr_Main():
+{}
+{
+	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > )| < IDENTIFIER >) (Expr_Times())? (("." | "|") Expr_Main())?
+}
+
+void Expr_Times():
+{}
+{
+	< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >
+}
