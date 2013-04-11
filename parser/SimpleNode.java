@@ -8,8 +8,8 @@ public class SimpleNode implements Node {
 	protected Object value;
 	protected DFA_Generator parser;
 
-	public static final int CONC = 0;
-	public static final int OR = 1;
+	public static final int OR = 0;
+	public static final int AND = 1;
 	public static final int PLUS = 2;
 	public static final int STAR = 3;
 	public static final int OPT = 4;
@@ -19,7 +19,7 @@ public class SimpleNode implements Node {
 
 	// added
 	//public int val;
-	public int op = 0;
+	public int op = -1;
 	public int timLeft = 0;
 	public int timRight = 0;
 	public String identifier = null;
@@ -95,7 +95,14 @@ public class SimpleNode implements Node {
 	 */
 
 	public void dump(String prefix) {
-		System.out.println(toString(prefix));
+		//System.out.println(toString(prefix));
+		switch(op) {
+		case(OR):
+			System.out.println("OR");
+		break;
+		case(AND):
+			System.out.println("AND");
+		}
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
 				SimpleNode n = (SimpleNode) children[i];

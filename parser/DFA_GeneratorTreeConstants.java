@@ -2,16 +2,22 @@
 public interface DFA_GeneratorTreeConstants
 {
   public int JJTSTART = 0;
-  public int JJTEXPR_MAIN = 1;
-  public int JJTEXPR_CONCAT = 2;
-  public int JJTEXPR_TIMES = 3;
+  public int JJTVOID = 1;
+  public int JJTOR = 2;
+  public int JJTAND = 3;
+  public int JJTPAR = 4;
+  public int JJTID = 5;
+  public int JJTTIMES = 6;
 
 
   public String[] jjtNodeName = {
     "Start",
-    "Expr_Main",
-    "Expr_Concat",
-    "Expr_Times",
+    "void",
+    "OR",
+    "AND",
+    "PAR",
+    "ID",
+    "TIMES",
   };
 }
-/* JavaCC - OriginalChecksum=438a32834bb5dbfd3a2b07b8c481e962 (do not edit this line) */
+/* JavaCC - OriginalChecksum=0e3892e02cca8b5dbe6b7b6e67c8d0e6 (do not edit this line) */

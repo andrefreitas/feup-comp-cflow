@@ -1,8 +1,8 @@
 
 options
 {
-  LOOKAHEAD = 2;
-  FORCE_LA_CHECK = true;
+  LOOKAHEAD = 1;
+  //FORCE_LA_CHECK = true;
 }
 
 PARSER_BEGIN(DFA_Generator)
@@ -15,7 +15,10 @@ public class DFA_Generator
     try
     {
       System.out.print("Give the expression: ");
-      DFA_Generator.Start();
+      
+      SimpleNode root =DFA_Generator.Start();
+
+      root.dump("");      
     }
     catch (Exception e)
     {
@@ -49,31 +52,37 @@ TOKEN :
 	| < QUANTIFIER_2: "{" < NUMBER > "," "}" >
 	| < QUANTIFIER_3: "{" < NUMBER > "," < NUMBER > "}" >
 	| < NLINE : "\n" >
-  
 }
 
-void Start() :
+SimpleNode Start() :
 {}
 {
   Expr_Main() < NLINE >
 	 {
 		System.out.println("ok");
+		return jjtThis;
 	}  
 }
 
-void Expr_Main():
-{}
+void Expr_Main() #void : 
+{} 
 {
-	Expr_Concat() ("|" Expr_Main())?
+	Expr_Concat() ("|" Expr_Main()
+	{
+		jjtThis.op = SimpleNode.OR;
+	} #OR(2))?
 } 
 
-void Expr_Concat():
+void Expr_Concat() #void:
 {}
-{	Expr_Times() ("." Expr_Main())*
+{	Expr_Node() ("." Expr_Main()
+	{
+		jjtThis.op = SimpleNode.AND;
+	} #AND(2))?
 }
 
-void Expr_Times():
+void Expr_Node() #void:
 {}
 {
-	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > )| < IDENTIFIER >) (< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >)?
+	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > #PAR)| (< IDENTIFIER > #ID)) ((< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >) #TIMES)?
 }
