@@ -153,7 +153,7 @@ void Expr_Concat()      :
 }
 
 void Expr_Node()      :
-{}
+{Token t;}
 {
 	( (< LEFT_PAR > Expr_Main()/*@bgen(jjtree) PAR */
                                     {
@@ -168,31 +168,40 @@ void Expr_Node()      :
                                         jjtree.closeNodeScope(jjtn001, true);
                                       }
                                     }
-/*@egen*/     )| (/*@bgen(jjtree) ID */
-                                                          {
-                                                            SimpleNode jjtn002 = new SimpleNode(JJTID);
-                                                            boolean jjtc002 = true;
-                                                            jjtree.openNodeScope(jjtn002);
-                                                          }
-                                                          try {
-/*@egen*/< IDENTIFIER >/*@bgen(jjtree)*/
-                                                          } finally {
-                                                            if (jjtc002) {
-                                                              jjtree.closeNodeScope(jjtn002, true);
-                                                            }
-                                                          }
-/*@egen*/    )) (/*@bgen(jjtree) TIMES */
-                                                                                {
-                                                                                  SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
-                                                                                  boolean jjtc003 = true;
-                                                                                  jjtree.openNodeScope(jjtn003);
-                                                                                }
-                                                                                try {
+/*@egen*/     )
+	| (t = < IDENTIFIER >/*@bgen(jjtree) ID */
+        {
+          SimpleNode jjtn002 = new SimpleNode(JJTID);
+          boolean jjtc002 = true;
+          jjtree.openNodeScope(jjtn002);
+        }
+        try {
+/*@egen*//*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn002, true);
+          jjtc002 = false;
+        }
+/*@egen*/	{		jjtn002.op = SimpleNode.ID;
+		jjtn002.identifier = t.image;
+	}/*@bgen(jjtree)*/
+        } finally {
+          if (jjtc002) {
+            jjtree.closeNodeScope(jjtn002, true);
+          }
+        }
+/*@egen*/    ))
+	(/*@bgen(jjtree) TIMES */
+         {
+           SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
+           boolean jjtc003 = true;
+           jjtree.openNodeScope(jjtn003);
+         }
+         try {
 /*@egen*/(< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >)/*@bgen(jjtree)*/
-                                                                                } finally {
-                                                                                  if (jjtc003) {
-                                                                                    jjtree.closeNodeScope(jjtn003, true);
-                                                                                  }
-                                                                                }
+         } finally {
+           if (jjtc003) {
+             jjtree.closeNodeScope(jjtn003, true);
+           }
+         }
 /*@egen*/       )?
 }

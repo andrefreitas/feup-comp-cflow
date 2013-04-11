@@ -82,7 +82,11 @@ void Expr_Concat() #void:
 }
 
 void Expr_Node() #void:
-{}
+{Token t;}
 {
-	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > #PAR)| (< IDENTIFIER > #ID)) ((< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >) #TIMES)?
+	( (< LEFT_PAR > Expr_Main() < RIGHT_PAR > #PAR)
+	| (t = < IDENTIFIER >	{		jjtThis.op = SimpleNode.ID;
+		jjtThis.identifier = t.image;
+	} #ID))
+	((< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >) #TIMES)?
 }

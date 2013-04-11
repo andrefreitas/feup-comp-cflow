@@ -16,6 +16,8 @@ public class SimpleNode implements Node {
 	public static final int TIMES = 5;
 	public static final int TIMESLEFT = 6;
 	public static final int TIMESINT = 7;
+	public static final int ID = 8;
+	
 
 	// added
 	//public int val;
@@ -102,6 +104,11 @@ public class SimpleNode implements Node {
 		break;
 		case(AND):
 			System.out.println("AND");
+		break;
+		case(ID):
+			System.out.println("ID: " + identifier);
+		default:
+			break;
 		}
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {

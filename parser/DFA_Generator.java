@@ -103,6 +103,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
   }
 
   static final public void Expr_Node() throws ParseException {
+ Token t;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LEFT_PAR:
       jj_consume_token(LEFT_PAR);
@@ -119,15 +120,19 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
       }
       break;
     case IDENTIFIER:
-                                                            SimpleNode jjtn002 = new SimpleNode(JJTID);
-                                                            boolean jjtc002 = true;
-                                                            jjtree.openNodeScope(jjtn002);
+      t = jj_consume_token(IDENTIFIER);
+          SimpleNode jjtn002 = new SimpleNode(JJTID);
+          boolean jjtc002 = true;
+          jjtree.openNodeScope(jjtn002);
       try {
-        jj_consume_token(IDENTIFIER);
+          jjtree.closeNodeScope(jjtn002, true);
+          jjtc002 = false;
+                jjtn002.op = SimpleNode.ID;
+                jjtn002.identifier = t.image;
       } finally {
-                                                            if (jjtc002) {
-                                                              jjtree.closeNodeScope(jjtn002, true);
-                                                            }
+          if (jjtc002) {
+            jjtree.closeNodeScope(jjtn002, true);
+          }
       }
       break;
     default:
@@ -142,9 +147,9 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     case QUANTIFIER_1:
     case QUANTIFIER_2:
     case QUANTIFIER_3:
-                                                                                  SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
-                                                                                  boolean jjtc003 = true;
-                                                                                  jjtree.openNodeScope(jjtn003);
+           SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
+           boolean jjtc003 = true;
+           jjtree.openNodeScope(jjtn003);
       try {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ONE_OR_MORE:
@@ -171,9 +176,9 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
           throw new ParseException();
         }
       } finally {
-                                                                                  if (jjtc003) {
-                                                                                    jjtree.closeNodeScope(jjtn003, true);
-                                                                                  }
+           if (jjtc003) {
+             jjtree.closeNodeScope(jjtn003, true);
+           }
       }
       break;
     default:
