@@ -144,9 +144,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     case ONE_OR_MORE:
     case ZERO_OR_MORE:
     case ZERO_OR_ONE:
-    case QUANTIFIER_1:
-    case QUANTIFIER_2:
-    case QUANTIFIER_3:
+    case 14:
            SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
            boolean jjtc003 = true;
            jjtree.openNodeScope(jjtn003);
@@ -154,24 +152,50 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ONE_OR_MORE:
           jj_consume_token(ONE_OR_MORE);
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+                jjtn003.timesType = SimpleNode.PLUS;
           break;
         case ZERO_OR_MORE:
           jj_consume_token(ZERO_OR_MORE);
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+                jjtn003.timesType = SimpleNode.STAR;
           break;
         case ZERO_OR_ONE:
           jj_consume_token(ZERO_OR_ONE);
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+                jjtn003.timesType = SimpleNode.QUESTIONM;
           break;
-        case QUANTIFIER_1:
-          jj_consume_token(QUANTIFIER_1);
-          break;
-        case QUANTIFIER_2:
-          jj_consume_token(QUANTIFIER_2);
-          break;
-        case QUANTIFIER_3:
-          jj_consume_token(QUANTIFIER_3);
+        case 14:
+          jj_consume_token(14);
+          t = jj_consume_token(NUMBER);
+                                jjtn003.timesType = SimpleNode.TIMES;
+                                jjtn003.timLeft = Integer.parseInt(t.image);
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case 15:
+            jj_consume_token(15);
+                                jjtn003.timesType = SimpleNode.TIMESLEFT;
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case NUMBER:
+              t = jj_consume_token(NUMBER);
+                                        jjtn003.timesType = SimpleNode.TIMESINT;
+                                        jjtn003.timRight = Integer.parseInt(t.image);
+              break;
+            default:
+              jj_la1[3] = jj_gen;
+              ;
+            }
+            break;
+          default:
+            jj_la1[4] = jj_gen;
+            ;
+          }
+          jj_consume_token(16);
           break;
         default:
-          jj_la1[3] = jj_gen;
+          jj_la1[5] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -182,7 +206,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
       }
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
   }
@@ -197,13 +221,13 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[5];
+  static final private int[] jj_la1 = new int[7];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x20,0x810,0xe380,0xe380,};
+      jj_la1_0 = new int[] {0x80,0x40,0x820,0x10,0x8000,0x4700,0x4700,};
    }
 
   /** Constructor with InputStream. */
@@ -224,7 +248,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -239,7 +263,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -256,7 +280,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -267,7 +291,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -283,7 +307,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -293,7 +317,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     jj_ntk = -1;
     jjtree.reset();
     jj_gen = 0;
-    for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 7; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -349,7 +373,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 7; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

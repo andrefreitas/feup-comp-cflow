@@ -9,31 +9,25 @@ public interface DFA_GeneratorConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int IDENTIFIER = 4;
+  int NUMBER = 4;
   /** RegularExpression Id. */
-  int SEPARATOR = 5;
+  int IDENTIFIER = 5;
   /** RegularExpression Id. */
-  int OR = 6;
+  int SEPARATOR = 6;
   /** RegularExpression Id. */
-  int ONE_OR_MORE = 7;
+  int OR = 7;
   /** RegularExpression Id. */
-  int ZERO_OR_MORE = 8;
+  int ONE_OR_MORE = 8;
   /** RegularExpression Id. */
-  int ZERO_OR_ONE = 9;
+  int ZERO_OR_MORE = 9;
   /** RegularExpression Id. */
-  int NUMBER = 10;
+  int ZERO_OR_ONE = 10;
   /** RegularExpression Id. */
   int LEFT_PAR = 11;
   /** RegularExpression Id. */
   int RIGHT_PAR = 12;
   /** RegularExpression Id. */
-  int QUANTIFIER_1 = 13;
-  /** RegularExpression Id. */
-  int QUANTIFIER_2 = 14;
-  /** RegularExpression Id. */
-  int QUANTIFIER_3 = 15;
-  /** RegularExpression Id. */
-  int NLINE = 16;
+  int NLINE = 13;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -44,19 +38,19 @@ public interface DFA_GeneratorConstants {
     "\" \"",
     "\"\\t\"",
     "\"\\r\"",
+    "<NUMBER>",
     "<IDENTIFIER>",
     "\".\"",
     "\"|\"",
     "\"+\"",
     "\"*\"",
     "\"?\"",
-    "<NUMBER>",
     "\"(\"",
     "\")\"",
-    "<QUANTIFIER_1>",
-    "<QUANTIFIER_2>",
-    "<QUANTIFIER_3>",
     "\"\\n\"",
+    "\"{\"",
+    "\",\"",
+    "\"}\"",
   };
 
 }

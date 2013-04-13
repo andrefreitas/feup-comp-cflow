@@ -39,18 +39,15 @@ SKIP :
 
 TOKEN : 
 {
-	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >
+	< NUMBER : (["0"-"9"])+ >
+	| < IDENTIFIER : ["A"-"Z","a"-"z"] (["A"-"Z","a"-"z","0"-"9"])* >
 	| < SEPARATOR : ".">
 	| < OR :"|" >
 	| < ONE_OR_MORE :"+" >
 	| < ZERO_OR_MORE :"*" >
 	| < ZERO_OR_ONE :"?" >
-	| < NUMBER : (["0"-"9"])+ >
 	| < LEFT_PAR: "(" >
 	| < RIGHT_PAR: ")" >
-	| < QUANTIFIER_1: "{" < NUMBER > "}" >
-	| < QUANTIFIER_2: "{" < NUMBER > "," "}" >
-	| < QUANTIFIER_3: "{" < NUMBER > "," < NUMBER > "}" >
 	| < NLINE : "\n" >
 }
 
@@ -88,5 +85,29 @@ void Expr_Node() #void:
 	| (t = < IDENTIFIER >	{		jjtThis.op = SimpleNode.ID;
 		jjtThis.identifier = t.image;
 	} #ID))
-	((< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >) #TIMES)?
+	((< ONE_OR_MORE >
+	{		jjtThis.timesType = SimpleNode.PLUS;
+	}
+	| < ZERO_OR_MORE >
+	{		jjtThis.timesType = SimpleNode.STAR;
+	}
+	| < ZERO_OR_ONE >
+	{		jjtThis.timesType = SimpleNode.QUESTIONM;
+	}
+	| ("{" t = < NUMBER >
+			{				jjtThis.timesType = SimpleNode.TIMES;
+				jjtThis.timLeft = Integer.parseInt(t.image);
+			}
+
+		(		  ","
+			{				jjtThis.timesType = SimpleNode.TIMESLEFT;
+			}
+	
+			(			  t = < NUMBER >
+				{					jjtThis.timesType = SimpleNode.TIMESINT;
+					jjtThis.timRight = Integer.parseInt(t.image);
+				}
+			)?
+		)?
+	"}") ) #TIMES)?
 }

@@ -43,18 +43,15 @@ SKIP :
 
 TOKEN : 
 {
-	< IDENTIFIER : (["A"-"Z","a"-"z","0"-"9"])+ >
+	< NUMBER : (["0"-"9"])+ >
+	| < IDENTIFIER : ["A"-"Z","a"-"z"] (["A"-"Z","a"-"z","0"-"9"])* >
 	| < SEPARATOR : ".">
 	| < OR :"|" >
 	| < ONE_OR_MORE :"+" >
 	| < ZERO_OR_MORE :"*" >
 	| < ZERO_OR_ONE :"?" >
-	| < NUMBER : (["0"-"9"])+ >
 	| < LEFT_PAR: "(" >
 	| < RIGHT_PAR: ")" >
-	| < QUANTIFIER_1: "{" < NUMBER > "}" >
-	| < QUANTIFIER_2: "{" < NUMBER > "," "}" >
-	| < QUANTIFIER_3: "{" < NUMBER > "," < NUMBER > "}" >
 	| < NLINE : "\n" >
 }
 
@@ -197,7 +194,46 @@ void Expr_Node()      :
            jjtree.openNodeScope(jjtn003);
          }
          try {
-/*@egen*/(< ONE_OR_MORE > | < ZERO_OR_MORE > | < ZERO_OR_ONE > | < QUANTIFIER_1 > | < QUANTIFIER_2 > | < QUANTIFIER_3 >)/*@bgen(jjtree)*/
+/*@egen*/(< ONE_OR_MORE >/*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+        }
+/*@egen*/
+	{		jjtn003.timesType = SimpleNode.PLUS;
+	}
+	| < ZERO_OR_MORE >/*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+        }
+/*@egen*/
+	{		jjtn003.timesType = SimpleNode.STAR;
+	}
+	| < ZERO_OR_ONE >/*@bgen(jjtree)*/
+        {
+          jjtree.closeNodeScope(jjtn003, true);
+          jjtc003 = false;
+        }
+/*@egen*/
+	{		jjtn003.timesType = SimpleNode.QUESTIONM;
+	}
+	| ("{" t = < NUMBER >
+			{				jjtn003.timesType = SimpleNode.TIMES;
+				jjtn003.timLeft = Integer.parseInt(t.image);
+			}
+
+		(		  ","
+			{				jjtn003.timesType = SimpleNode.TIMESLEFT;
+			}
+	
+			(			  t = < NUMBER >
+				{					jjtn003.timesType = SimpleNode.TIMESINT;
+					jjtn003.timRight = Integer.parseInt(t.image);
+				}
+			)?
+		)?
+	"}") )/*@bgen(jjtree)*/
          } finally {
            if (jjtc003) {
              jjtree.closeNodeScope(jjtn003, true);

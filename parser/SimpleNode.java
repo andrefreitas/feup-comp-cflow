@@ -12,7 +12,7 @@ public class SimpleNode implements Node {
 	public static final int AND = 1;
 	public static final int PLUS = 2;
 	public static final int STAR = 3;
-	public static final int OPT = 4;
+	public static final int QUESTIONM = 4;
 	public static final int TIMES = 5;
 	public static final int TIMESLEFT = 6;
 	public static final int TIMESINT = 7;
@@ -22,8 +22,9 @@ public class SimpleNode implements Node {
 	// added
 	//public int val;
 	public int op = -1;
-	public int timLeft = 0;
-	public int timRight = 0;
+	public int timesType = -1;
+	public int timLeft = -1;
+	public int timRight = -1;
 	public String identifier = null;
 
 	public SimpleNode(int i) {
@@ -107,6 +108,28 @@ public class SimpleNode implements Node {
 		break;
 		case(ID):
 			System.out.println("ID: " + identifier);
+		default:
+			break;
+		}
+		switch(timesType) {
+		case(PLUS):
+			System.out.println("ONCE OR MORE TIMES");
+		break;
+		case(STAR):
+			System.out.println("ZERO OR MORE TIMES");
+		break;
+		case(QUESTIONM):
+			System.out.println("ZERO OR ONCE");
+		break;
+		case(TIMES):
+			System.out.println("TIMES {" + timLeft + "}");
+		break;
+		case(TIMESLEFT):
+			System.out.println("TIMESLEFT {" + timLeft + ",}");
+		break;
+		case(TIMESINT):
+			System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
+		break;
 		default:
 			break;
 		}
