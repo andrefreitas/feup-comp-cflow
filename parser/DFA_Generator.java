@@ -22,6 +22,8 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
                         HashMap< String, String > transitions = new HashMap<String, String>();
                         Set< String > accept_states = new TreeSet<String>();
                         ArrayList< Boolean > sides = new ArrayList< Boolean >();
+                        String intialState = "q0";
+                        states.add(intialState);
                         root.prepareDFAData(alphabet, states, transitions, accept_states, sides);
 
                         System.out.println("Alphabet:");

@@ -22,6 +22,7 @@ public class SimpleNode implements Node {
 	public static final int TIMESINT = 7;
 	public static final int ID = 8;
 	
+	public static int currentState = 0;
 
 	// added
 	//public int val;
@@ -147,7 +148,13 @@ public class SimpleNode implements Node {
 		}
 	}
 	
-	public static boolean verifySides(ArrayList<Boolean> sides)
+	private static String getState() {
+		currentState++;
+		
+		return "q" + Integer.toString(currentState);
+	}
+	
+	private static boolean verifySides(ArrayList<Boolean> sides)
 	{
 		for(int i = 0; i < sides.size(); i++)
 			if(sides.get(i))
