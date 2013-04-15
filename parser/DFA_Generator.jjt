@@ -9,6 +9,8 @@ PARSER_BEGIN(DFA_Generator)
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 import java.util.Iterator;
 
@@ -25,7 +27,11 @@ public class DFA_Generator
 			
 			root.dump("");
 			Set< String > alphabet = new TreeSet<String>();
-			root.getAlphabet(alphabet);
+			Set< String > states = new TreeSet<String>();
+			HashMap< String, String > transitions = new HashMap<String, String>();
+			Set< String > accept_states = new TreeSet<String>();
+			ArrayList< Boolean > sides = new ArrayList< Boolean >();
+			root.prepareDFAData(alphabet, states, transitions, accept_states, sides);
 
 			System.out.println("Alphabet:");
 			for (Iterator<String> it = alphabet.iterator(); it.hasNext(); ) {
