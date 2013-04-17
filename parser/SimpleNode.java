@@ -23,6 +23,8 @@ public class SimpleNode implements Node {
 	public static final int ID = 8;
 	
 	public static int currentState = 0;
+	private static String beforeState = null;
+	private static String lastState = "q0";
 
 	// added
 	//public int val;
@@ -103,7 +105,7 @@ public class SimpleNode implements Node {
 	 */
 
 	public void dump(String prefix) {
-		//System.out.println(toString(prefix));
+		System.out.println(toString(prefix));
 		switch(op) {
 		case(OR):
 			System.out.println("OR");
@@ -151,6 +153,9 @@ public class SimpleNode implements Node {
 	private static String getState() {
 		currentState++;
 		
+		beforeState  = lastState;
+		lastState = "q" + Integer.toString(currentState);
+		
 		return "q" + Integer.toString(currentState);
 	}
 	
@@ -163,10 +168,34 @@ public class SimpleNode implements Node {
 		return true;
 	}
 	
-	public void prepareDFAData(Set< String > alphabet, Set< String > states, HashMap< String, String > transitions, Set< String > accept_states, ArrayList<Boolean> sides)
-	{
+	public void parseDFA(Set< String > alphabet, Set< String > states,
+			HashMap< String, String > transitions, Set< String > accept_states,
+			ArrayList<Boolean> sides, int lastOp) {
+		
+		int nextOp = -1;
+		
 		if(op == ID)
 			alphabet.add(identifier);
+		
+		else if(op == OR)
+		{
+			if(lastOp == 0)
+			{
+				
+			}
+			
+			else
+			{
+				
+			}
+			
+			nextOp = 0;
+		}
+		
+		else if(op == AND)
+		{
+			nextOp = 1;
+		}
 		
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
@@ -178,7 +207,7 @@ public class SimpleNode implements Node {
 						
 					else sides.add(false);
 					
-					n.prepareDFAData(alphabet, states, transitions, accept_states, sides);
+					n.parseDFA(alphabet, states, transitions, accept_states, sides, nextOp);
 				}
 			}
 		}
