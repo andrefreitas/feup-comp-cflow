@@ -30,10 +30,9 @@ public class DFA_Generator
 			Set< String > states = new TreeSet<String>();
 			HashMap< String, String > transitions = new HashMap<String, String>();
 			Set< String > accept_states = new TreeSet<String>();
-			ArrayList< Boolean > sides = new ArrayList< Boolean >();
 			String initialState = "q0";
 			states.add(initialState);
-			root.parseDFA(alphabet, states, transitions, accept_states, sides, -1);
+			root.parseDFA(alphabet, states, transitions, accept_states);
 
 			System.out.println("Alphabet:");
 			for (Iterator<String> it = alphabet.iterator(); it.hasNext(); ) {

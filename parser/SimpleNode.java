@@ -22,9 +22,9 @@ public class SimpleNode implements Node {
 	public static final int TIMESINT = 7;
 	public static final int ID = 8;
 	
-	public static int currentState = 0;
-	private static String beforeState = null;
-	private static String lastState = "q0";
+	private static int numberState = 0;
+	private static String startState = "q0";
+	private static String currentState = "q0";
 
 	// added
 	//public int val;
@@ -151,70 +151,36 @@ public class SimpleNode implements Node {
 	}
 	
 	private static String getState() {
-		currentState++;
+		numberState++;
 		
-		beforeState  = lastState;
-		lastState = "q" + Integer.toString(currentState);
+		currentState = "q" + Integer.toString(numberState);
 		
-		return "q" + Integer.toString(currentState);
-	}
-	
-	private static boolean verifySides(ArrayList<Boolean> sides)
-	{
-		for(int i = 0; i < sides.size(); i++)
-			if(sides.get(i))
-				return false;
-		
-		return true;
+		return currentState;
 	}
 	
 	public void parseDFA(Set< String > alphabet, Set< String > states,
-			HashMap< String, String > transitions, Set< String > accept_states,
-			ArrayList<Boolean> sides, int lastOp) {
-		
-		int nextOp = -1;
+			HashMap< String, String > transitions, Set< String > accept_states) {
 		
 		if(op == ID)
 			alphabet.add(identifier);
 		
 		else if(op == OR)
 		{
-			if(lastOp == 0)
-			{
-				
-			}
 			
-			else
-			{
-				
-			}
-			
-			nextOp = 0;
 		}
 		
 		else if(op == AND)
 		{
-			nextOp = 1;
+			
 		}
 		
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
 				SimpleNode n = (SimpleNode) children[i];
-				if (n != null) {
-					
-					if(i == 0)
-						sides.add(true);
-						
-					else sides.add(false);
-					
-					n.parseDFA(alphabet, states, transitions, accept_states, sides, nextOp);
+				if (n != null) {				
+					n.parseDFA(alphabet, states, transitions, accept_states);
 				}
 			}
-		}
-		
-		else if(verifySides(sides))
-		{
-			// adicionar aqui o estado final
 		}
 	}
 }
