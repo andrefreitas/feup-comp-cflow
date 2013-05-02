@@ -776,132 +776,36 @@ public class ENFA {
 		return ret;
 	}
 
-	// Nao funciona - nao chamar
+	// Nao testado
 	public static ENFA operator_times(ENFA enfa1, int times) {
-		ENFA ret = new ENFA();
-		Iterator<String> it, it1;
-
-		// Adds all the identifiers on the alphabet of enfa1 and enfa2 to the
-		// new enfa alphabet including the null(Epsilon)
-		it = enfa1.alphabet.iterator();
-		for (; it.hasNext();) {
-			ret.alphabet.add(it.next());
+		
+		ENFA current = enfa1;
+		
+		for(int i = 1; i < times; i++) {
+			current = operator_and(current, enfa1);
 		}
+		
+		return current;
+	}
+	
+	// Nao testado
+	public static ENFA operator_timesleft(ENFA enfa1, int times) {
 
-		int i = 0;
-		// Adds an initial state q0
-		ret.add_state("q" + i);
-		ret.initial_state = "q" + i;
-		++i;
+		ENFA current = operator_times(enfa1, times);
+		ENFA opt = operator_star(enfa1);
 
-		ArrayList<String> last_states = new ArrayList<String>();
+		return operator_and(current, opt);
+	}
+	
 
-		// states to connect
-		last_states.add(ret.initial_state);
-		int previous_number = i;
+	// Nao testado
+	public static ENFA operator_timesint(ENFA enfa1, int times_left, int times_right) {
 
-		Set<String> accept_states_temp = enfa1.accept_states;
+		ENFA current = operator_times(enfa1, times_left);
+		
+		for(int i = times_left + 1; i <= times_right; i++)
+			current = operator_or(current, operator_times(enfa1, i));
 
-		for (int current_times = 0; current_times < times; current_times++) {
-
-			ArrayList<String> last_states_temp = new ArrayList<String>();
-
-			// Adds all the states from enfa1
-			it = enfa1.states.iterator();
-			for (; it.hasNext(); i++) {
-				ret.add_state("q" + i);
-
-				String current_state = it.next();
-
-				if (current_state.equals(enfa1.initial_state)) {
-
-				}
-
-				if (accept_states_temp.contains(current_state)) {
-					last_states_temp.add(current_state);
-				}
-			}
-
-			last_states = last_states_temp;
-
-		}
-
-		// Adds the final state and turn it into an accept state
-		String final_state = "q" + i;
-		ret.add_state(final_state);
-		try {
-			ret.add_accept_state("q" + i);
-		} catch (InvalidStateException e) {
-			e.printStackTrace();
-		}
-
-		// Adds the first transition from the new initial state to the enfa1
-		// initial state
-		String[] transition = new String[3];
-		transition[0] = "q0"; // state
-		transition[1] = EPSILON; // symbol (Epsilon)
-		transition[2] = "q1"; // result
-		try {
-			ret.add_transition(transition);
-		} catch (InvalidTransitionException e) {
-			e.printStackTrace();
-		}
-
-		// Adds the transitions from the enfa1
-		it = enfa1.states.iterator();
-		it1 = enfa1.states.iterator();
-
-		for (int j = 1; it.hasNext(); j++) {
-			String state1 = it.next();
-			for (int k = 1; it1.hasNext(); k++) {
-				String key = state1 + "." + it1.next();
-				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
-					// (Epsilon)
-					for (String symbol : symbols) {
-						String[] transitionAux = new String[3];
-						transitionAux[0] = "q" + j;
-						transitionAux[1] = symbol;
-						transitionAux[2] = "q" + k;
-						try {
-							ret.add_transition(transition);
-						} catch (InvalidTransitionException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-
-		// Connects all the accept states from the enfa1 to the final state of
-		// the new enfa
-		it = enfa1.accept_states.iterator();
-		for (; it.hasNext();) {
-			i = Integer.parseInt(it.next().substring(1)) + 1;
-			transition[0] = "q" + i; // state
-			transition[1] = EPSILON; // symbol (Epsilon)
-			// i =
-			// Integer.parseInt(enfa2.initial_state.substring(1))+enfa2.states.size();
-			transition[2] = final_state; // result
-			try {
-				ret.add_transition(transition);
-			} catch (InvalidTransitionException e) {
-				e.printStackTrace();
-			}
-		}
-
-		// Transition between first and last
-
-		String[] transition2 = new String[3];
-		transition2[0] = "q0"; // state
-		transition2[1] = EPSILON; // symbol (Epsilon)
-		transition2[2] = final_state; // result
-		try {
-			ret.add_transition(transition2);
-		} catch (InvalidTransitionException e) {
-			e.printStackTrace();
-		}
-
-		return ret;
+		return current;
 	}
 }
