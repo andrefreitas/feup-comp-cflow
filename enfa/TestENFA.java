@@ -32,11 +32,13 @@ public class TestENFA extends TestCase {
 		String[] t2 = { "q0", "a", "q2" };
 		String[] t3 = { "q2", "", "q3" };
 		String[] t4 = { "q3", "b", "q4" };
+		String[] t5 = { "q4", "", "q0" };
 		transitions.add(t1);
 		transitions.add(t2);
 		transitions.add(t3);
 		transitions.add(t4);
-
+		transitions.add(t5);
+		
 		/* Initial State */
 		String initial_state = "q0";
 
@@ -51,8 +53,8 @@ public class TestENFA extends TestCase {
 
 		/* Test */
 		assertTrue(d1.match("a.b"));
+		assertTrue(d1.match("a.b.a.b.a.b.a"));
 		assertTrue(d1.match("a"));
-		
 
 
 	}
