@@ -16,6 +16,8 @@ public class ENFA {
 	private HashMap<String, String> transitions;
 	private String initial_state;
 	private Set<String> accept_states;
+	private final String EPSILON = "";
+	private boolean isEpsilon;
 
 	public ENFA(Set<String> states, Set<String> alphabet,
 			ArrayList<String[]> transitions, String initial_state,
@@ -72,7 +74,7 @@ public class ENFA {
 		String symbol = transition[1];
 		String result = transition[2];
 
-		if (states.contains(state) && alphabet.contains(symbol)
+		if (states.contains(state) && (alphabet.contains(symbol) || symbol==EPSILON)
 				&& states.contains(result)) {
 			transitions.put(state + "." + symbol, result);
 		} else
@@ -83,14 +85,23 @@ public class ENFA {
 	public boolean match(String string) {
 
 		String[] identifiers = string.split("\\.");
-		
-	
 
 		String state = initial_state;
 		try {
-			for (int i = 0; i < identifiers.length; i++) {
+			for (int i = 0; i < identifiers.length; ) {
+				isEpsilon = false;
+				System.out.print("State : "+ state + " Symbol: ");
 				state = get_next_state(state, identifiers[i]);
-
+				
+				if(isEpsilon == false){
+					System.out.print(identifiers[i]);
+					i++;
+				}else{
+					System.out.println("EPSILON");
+				}
+				System.out.println(" ->" + state);
+				System.out.println(" i -> " + i);
+				
 			}
 		} catch (DeadState e) {
 			return false;
@@ -102,10 +113,15 @@ public class ENFA {
 		return false;
 	}
 
-	private String get_next_state(String q1, String symbol) throws DeadState {
-		String key = q1 + "." + symbol;
+	private String get_next_state(String state, String symbol) throws DeadState {
+		String key = state + "." + symbol;
+		String keyEpson = state + "." + EPSILON;
 		if (transitions.containsKey(key)) {
 			return transitions.get(key);
+		}
+		else if(transitions.containsKey(keyEpson)){
+			isEpsilon = true;
+			return transitions.get(keyEpson);
 		}
 		throw new DeadState();
 
@@ -130,7 +146,7 @@ public class ENFA {
 	}
 	
 	/*
-	 * AINDA NÃO ESTÁ TESTADO ... Mas dêem uma vista de olhos para ver se é isto que se tem que fazer :)	
+	 * AINDA Nï¿½O ESTï¿½ TESTADO ... Mas dï¿½em uma vista de olhos para ver se ï¿½ isto que se tem que fazer :)	
 	 */
 	public static ENFA operator_and(ENFA enfa1,ENFA enfa2) {
 		ENFA ret = new ENFA();
