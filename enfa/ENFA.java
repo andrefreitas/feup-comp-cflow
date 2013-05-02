@@ -136,7 +136,7 @@ public class ENFA {
 		ENFA ret = new ENFA();
 		Iterator<String> it,it1;
 		
-		//Add all the identifier on the alphabet of enfa1 and enfa2 to the new enfa alphabet including the null(Epsilon)
+		//Adds all the identifiers on the alphabet of enfa1 and enfa2 to the new enfa alphabet including the null(Epsilon)
 		it = enfa1.alphabet.iterator();
 		for(;it.hasNext();) {
 			ret.alphabet.add(it.next());
@@ -150,12 +150,12 @@ public class ENFA {
 		ret.alphabet.add(null); //Epsilon
 		
 		int i = 0;
-		//Add an initial state q0
+		//Adds an initial state q0
 		ret.add_state("q"+i);
 		ret.initial_state = "q"+i;
 		++i;
 		
-		//Add all the states from enfa1 and enfa2
+		//Adds all the states from enfa1 and enfa2
 		it = enfa1.states.iterator();
 		for(;it.hasNext();i++) {
 			ret.add_state("q"+i);
@@ -164,7 +164,7 @@ public class ENFA {
 		for(;it.hasNext();i++) {
 			ret.add_state("q"+i);
 		}
-		//Add the final state and turn it into an accept state
+		//Adds the final state and turn it into an accept state
 		String final_state = "q"+i;
 		ret.add_state(final_state);
 		try {
@@ -173,7 +173,7 @@ public class ENFA {
 			e.printStackTrace();
 		}
 		
-		//Add the first transition from the new initial state to the enfa1 initial state
+		//Adds the first transition from the new initial state to the enfa1 initial state
 		String[] transition = new String[3];
 		transition[0] = "q0"; //state
 		transition[1] = null; //symbol (Epsilon)
