@@ -90,17 +90,10 @@ public class ENFA {
 		try {
 			for (int i = 0; i < identifiers.length; ) {
 				isEpsilon = false;
-				System.out.print("State : "+ state + " Symbol: ");
 				state = get_next_state(state, identifiers[i]);
-				
 				if(isEpsilon == false){
-					System.out.print(identifiers[i]);
 					i++;
-				}else{
-					System.out.println("EPSILON");
 				}
-				System.out.println(" ->" + state);
-				System.out.println(" i -> " + i);
 				
 			}
 		} catch (DeadState e) {
