@@ -1,3 +1,4 @@
+package parser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -105,7 +106,7 @@ public class SimpleNode implements Node {
 	 */
 
 	public void dump(String prefix) {
-		System.out.println(toString(prefix));
+
 		switch(op) {
 		case(OR):
 			System.out.println("OR");
