@@ -54,5 +54,4 @@ public class TestENFA extends TestCase {
 		assertTrue(d1.match("a"));
 
 	}
-
 }
