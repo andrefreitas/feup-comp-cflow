@@ -127,5 +127,12 @@ public class ENFA {
 			throw new InvalidStateException();
 		}
 	}
+	
+	public static ENFA operator_and(ENFA enfa1,ENFA enfa2) {
+		ENFA ret = new ENFA();
+		ret.add_state("q7");
+		ret.initial_state = "q7";
+		return ret;
+	}
 
 }
