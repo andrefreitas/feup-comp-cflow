@@ -148,6 +148,152 @@ public class ENFA {
 		}
 	}
 
+	/*
+	 * AINDA N�O EST� TESTADO ... Mas d�em uma vista de olhos para ver se � isto
+	 * que se tem que fazer :)
+	 */
+	public static ENFA operator_and(ENFA enfa1, ENFA enfa2) {
+		ENFA ret = new ENFA();
+		Iterator<String> it, it1;
+
+		// Adds all the identifiers on the alphabet of enfa1 and enfa2 to the
+		// new enfa alphabet including the null(Epsilon)
+		it = enfa1.alphabet.iterator();
+		for (; it.hasNext();) {
+			ret.alphabet.add(it.next());
+		}
+
+		it = enfa2.alphabet.iterator();
+		for (; it.hasNext();) {
+			ret.alphabet.add(it.next());
+		}
+
+		ret.alphabet.add(EPSILON); // Epsilon
+
+		int i = 0;
+		// Adds an initial state q0
+		ret.add_state("q" + i);
+		ret.initial_state = "q" + i;
+		++i;
+
+		// Adds all the states from enfa1 and enfa2
+		it = enfa1.states.iterator();
+		for (; it.hasNext(); i++) {
+			ret.add_state("q" + i);
+		}
+		it = enfa2.states.iterator();
+		for (; it.hasNext(); i++) {
+			ret.add_state("q" + i);
+		}
+		// Adds the final state and turn it into an accept state
+		String final_state = "q" + i;
+		ret.add_state(final_state);
+		try {
+			ret.add_accept_state("q" + i);
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
+
+		// Adds the first transition from the new initial state to the enfa1
+		// initial state
+		String[] transition = new String[3];
+		transition[0] = "q0"; // state
+		transition[1] = EPSILON; // symbol (Epsilon)
+		transition[2] = "q1"; // result
+		try {
+			ret.add_transition(transition);
+		} catch (InvalidTransitionException e) {
+			e.printStackTrace();
+		}
+
+		// Adds the transitions from the enfa1
+		it = enfa1.states.iterator();
+		it1 = enfa1.states.iterator();
+
+		for (int j = 1; it.hasNext(); j++) {
+			String state1 = it.next();
+			for (int k = 1; it1.hasNext(); k++) {
+				String key = state1 + "." + it1.next();
+				if (enfa1.transitions.containsKey(key)) {
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		// Adds the transitions from the enfa2
+		it = enfa2.states.iterator();
+		it1 = enfa2.states.iterator();
+
+		for (int j = enfa1.states.size(); it.hasNext(); j++) {
+			String state1 = it.next();
+			for (int k = enfa1.states.size(); it1.hasNext(); k++) {
+				String key = state1 + "." + it1.next();
+				if (enfa2.transitions.containsKey(key)) {
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		// Connects all the accept states from the enfa1 to the initial state of
+		// enfa2
+		it = enfa1.accept_states.iterator();
+		for (; it.hasNext();) {
+			i = Integer.parseInt(it.next().substring(1)) + 1;
+			transition[0] = "q" + i; // state
+			transition[1] = EPSILON; // symbol (Epsilon)
+			i = Integer.parseInt(enfa2.initial_state.substring(1))
+					+ enfa2.states.size();
+			transition[2] = "q" + i; // result
+			try {
+				ret.add_transition(transition);
+			} catch (InvalidTransitionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Connects all the accept states from the enfa2 to the final state of
+		// the new enfa
+		it = enfa2.accept_states.iterator();
+		for (; it.hasNext();) {
+			i = Integer.parseInt(it.next().substring(1)) + 1;
+			transition[0] = "q" + i; // state
+			transition[1] = EPSILON; // symbol (Epsilon)
+			i = Integer.parseInt(final_state.substring(1));
+			transition[2] = "q" + i; // result
+			try {
+				ret.add_transition(transition);
+			} catch (InvalidTransitionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return ret;
+	}
+
 	public static ENFA operator_or(ENFA enfa1, ENFA enfa2) {
 		ENFA ret = new ENFA();
 		Iterator<String> it, it1;
@@ -228,10 +374,10 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
-																// (Epsilon)
-					for(String symbol: symbols){
-						String [] transitionAux= new String[3];
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
 						transitionAux[0] = "q" + j;
 						transitionAux[1] = symbol;
 						transitionAux[2] = "q" + k;
@@ -254,10 +400,10 @@ public class ENFA {
 			for (int k = enfa1.states.size(); it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
-																// (Epsilon)
-					for(String symbol: symbols){
-						String [] transitionAux= new String[3];
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
 						transitionAux[0] = "q" + j;
 						transitionAux[1] = symbol;
 						transitionAux[2] = "q" + k;
@@ -267,7 +413,7 @@ public class ENFA {
 							e.printStackTrace();
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -365,10 +511,10 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
-																// (Epsilon)
-					for(String symbol: symbols){
-						String [] transitionAux= new String[3];
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
 						transitionAux[0] = "q" + j;
 						transitionAux[1] = symbol;
 						transitionAux[2] = "q" + k;
@@ -479,10 +625,10 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
-																// (Epsilon)
-					for(String symbol: symbols){
-						String [] transitionAux= new String[3];
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
 						transitionAux[0] = "q" + j;
 						transitionAux[1] = symbol;
 						transitionAux[2] = "q" + k;
@@ -581,10 +727,139 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
-																// (Epsilon)
-					for(String symbol: symbols){
-						String [] transitionAux= new String[3];
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		// Connects all the accept states from the enfa1 to the final state of
+		// the new enfa
+		it = enfa1.accept_states.iterator();
+		for (; it.hasNext();) {
+			i = Integer.parseInt(it.next().substring(1)) + 1;
+			transition[0] = "q" + i; // state
+			transition[1] = EPSILON; // symbol (Epsilon)
+			// i =
+			// Integer.parseInt(enfa2.initial_state.substring(1))+enfa2.states.size();
+			transition[2] = final_state; // result
+			try {
+				ret.add_transition(transition);
+			} catch (InvalidTransitionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// Transition between first and last
+
+		String[] transition2 = new String[3];
+		transition2[0] = "q0"; // state
+		transition2[1] = EPSILON; // symbol (Epsilon)
+		transition2[2] = final_state; // result
+		try {
+			ret.add_transition(transition2);
+		} catch (InvalidTransitionException e) {
+			e.printStackTrace();
+		}
+
+		return ret;
+	}
+
+	// Nao funciona - nao chamar
+	public static ENFA operator_times(ENFA enfa1, int times) {
+		ENFA ret = new ENFA();
+		Iterator<String> it, it1;
+
+		// Adds all the identifiers on the alphabet of enfa1 and enfa2 to the
+		// new enfa alphabet including the null(Epsilon)
+		it = enfa1.alphabet.iterator();
+		for (; it.hasNext();) {
+			ret.alphabet.add(it.next());
+		}
+
+		int i = 0;
+		// Adds an initial state q0
+		ret.add_state("q" + i);
+		ret.initial_state = "q" + i;
+		++i;
+
+		ArrayList<String> last_states = new ArrayList<String>();
+
+		// states to connect
+		last_states.add(ret.initial_state);
+		int previous_number = i;
+
+		Set<String> accept_states_temp = enfa1.accept_states;
+
+		for (int current_times = 0; current_times < times; current_times++) {
+
+			ArrayList<String> last_states_temp = new ArrayList<String>();
+
+			// Adds all the states from enfa1
+			it = enfa1.states.iterator();
+			for (; it.hasNext(); i++) {
+				ret.add_state("q" + i);
+
+				String current_state = it.next();
+
+				if (current_state.equals(enfa1.initial_state)) {
+
+				}
+
+				if (accept_states_temp.contains(current_state)) {
+					last_states_temp.add(current_state);
+				}
+			}
+
+			last_states = last_states_temp;
+
+		}
+
+		// Adds the final state and turn it into an accept state
+		String final_state = "q" + i;
+		ret.add_state(final_state);
+		try {
+			ret.add_accept_state("q" + i);
+		} catch (InvalidStateException e) {
+			e.printStackTrace();
+		}
+
+		// Adds the first transition from the new initial state to the enfa1
+		// initial state
+		String[] transition = new String[3];
+		transition[0] = "q0"; // state
+		transition[1] = EPSILON; // symbol (Epsilon)
+		transition[2] = "q1"; // result
+		try {
+			ret.add_transition(transition);
+		} catch (InvalidTransitionException e) {
+			e.printStackTrace();
+		}
+
+		// Adds the transitions from the enfa1
+		it = enfa1.states.iterator();
+		it1 = enfa1.states.iterator();
+
+		for (int j = 1; it.hasNext(); j++) {
+			String state1 = it.next();
+			for (int k = 1; it1.hasNext(); k++) {
+				String key = state1 + "." + it1.next();
+				if (enfa1.transitions.containsKey(key)) {
+					TreeSet<String> symbols = enfa1.transitions.get(key); // symbol
+					// (Epsilon)
+					for (String symbol : symbols) {
+						String[] transitionAux = new String[3];
 						transitionAux[0] = "q" + j;
 						transitionAux[1] = symbol;
 						transitionAux[2] = "q" + k;
