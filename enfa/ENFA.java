@@ -6,10 +6,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import enfa.DeadState;
-import enfa.InvalidStateException;
-import enfa.InvalidTransitionException;
-
 public class ENFA {
 	private Set<String> states;
 	private Set<String> alphabet;
@@ -77,10 +73,10 @@ public class ENFA {
 		if (states.contains(state)
 				&& (alphabet.contains(symbol) || symbol == EPSILON)
 				&& states.contains(result)) {
-			if(transitions.get(state + "." + symbol) == null){
+			if (transitions.get(state + "." + symbol) == null) {
 				transitions.put(state + "." + symbol, new TreeSet<String>());
 			}
-			transitions.get(state + "." + symbol).add(result); 
+			transitions.get(state + "." + symbol).add(result);
 		} else
 			throw new InvalidTransitionException();
 
@@ -89,37 +85,39 @@ public class ENFA {
 	public boolean match(String string) {
 		String[] identifiers = string.split("\\.");
 		String state = initial_state;
-		return matchRecursive(state, identifiers,0);
+		return matchRecursive(state, identifiers, 0);
 	}
-	
-	public boolean matchRecursive(String state, String[] identifiers, int index){
-		
-		if (accept_states.contains(state) && index==identifiers.length)
+
+	public boolean matchRecursive(String state, String[] identifiers, int index) {
+
+		if (accept_states.contains(state) && index == identifiers.length)
 			return true;
-		
+
 		try {
-				isEpsilon = false;
-				TreeSet<String> nextStates = get_next_state(state, identifiers[index]);
-				if(isEpsilon == false){
-					index = index + 1;
+			isEpsilon = false;
+			TreeSet<String> nextStates = get_next_state(state,
+					identifiers[index]);
+			if (isEpsilon == false) {
+				index = index + 1;
+			}
+
+			boolean result = false;
+			for (String nextState : nextStates) {
+				boolean match = matchRecursive(nextState, identifiers, index);
+				if (match == true) {
+					result = true;
+					break;
 				}
-				
-				boolean result = false;
-				for(String nextState: nextStates){
-					boolean match = matchRecursive(nextState, identifiers, index);
-					if (match == true) {
-						result = true;
-						break;
-					}
-				}
-				
-				return result;
+			}
+
+			return result;
 		} catch (DeadState e) {
 			return false;
 		}
 	}
 
-	private TreeSet<String> get_next_state(String state, String symbol) throws DeadState {
+	private TreeSet<String> get_next_state(String state, String symbol)
+			throws DeadState {
 		String key = state + "." + symbol;
 		String keyEpson = state + "." + EPSILON;
 		if (transitions.containsKey(key)) {
@@ -149,9 +147,7 @@ public class ENFA {
 			throw new InvalidStateException();
 		}
 	}
-}
 
-/** Convert to treeset all the states **/
 	public static ENFA operator_or(ENFA enfa1, ENFA enfa2) {
 		ENFA ret = new ENFA();
 		Iterator<String> it, it1;
@@ -180,6 +176,7 @@ public class ENFA {
 		it = enfa1.states.iterator();
 		for (; it.hasNext(); i++) {
 			ret.add_state("q" + i);
+			it.next();
 		}
 		it = enfa2.states.iterator();
 
@@ -187,6 +184,7 @@ public class ENFA {
 
 		for (; it.hasNext(); i++) {
 			ret.add_state("q" + i);
+			it.next();
 		}
 		// Adds the final state and turn it into an accept state
 		String final_state = "q" + i;
@@ -230,14 +228,18 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					transition[0] = "q" + j; // state
-					transition[1] = enfa1.transitions.get(key); // symbol
+					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
 																// (Epsilon)
-					transition[2] = "q" + k; // result
-					try {
-						ret.add_transition(transition);
-					} catch (InvalidTransitionException e) {
-						e.printStackTrace();
+					for(String symbol: symbols){
+						String [] transitionAux= new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -251,16 +253,21 @@ public class ENFA {
 			String state1 = it.next();
 			for (int k = enfa1.states.size(); it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
-				if (enfa2.transitions.containsKey(key)) {
-					transition[0] = "q" + j; // state
-					transition[1] = enfa1.transitions.get(key); // symbol
+				if (enfa1.transitions.containsKey(key)) {
+					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
 																// (Epsilon)
-					transition[2] = "q" + k; // result
-					try {
-						ret.add_transition(transition);
-					} catch (InvalidTransitionException e) {
-						e.printStackTrace();
+					for(String symbol: symbols){
+						String [] transitionAux= new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
 					}
+					
 				}
 			}
 		}
@@ -325,6 +332,7 @@ public class ENFA {
 		it = enfa1.states.iterator();
 		for (; it.hasNext(); i++) {
 			ret.add_state("q" + i);
+			it.next();
 		}
 
 		// Adds the final state and turn it into an accept state
@@ -357,14 +365,18 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					transition[0] = "q" + j; // state
-					transition[1] = enfa1.transitions.get(key); // symbol
+					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
 																// (Epsilon)
-					transition[2] = "q" + k; // result
-					try {
-						ret.add_transition(transition);
-					} catch (InvalidTransitionException e) {
-						e.printStackTrace();
+					for(String symbol: symbols){
+						String [] transitionAux= new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -434,6 +446,7 @@ public class ENFA {
 		it = enfa1.states.iterator();
 		for (; it.hasNext(); i++) {
 			ret.add_state("q" + i);
+			it.next();
 		}
 
 		// Adds the final state and turn it into an accept state
@@ -466,14 +479,18 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					transition[0] = "q" + j; // state
-					transition[1] = enfa1.transitions.get(key); // symbol
+					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
 																// (Epsilon)
-					transition[2] = "q" + k; // result
-					try {
-						ret.add_transition(transition);
-					} catch (InvalidTransitionException e) {
-						e.printStackTrace();
+					for(String symbol: symbols){
+						String [] transitionAux= new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -531,6 +548,7 @@ public class ENFA {
 		it = enfa1.states.iterator();
 		for (; it.hasNext(); i++) {
 			ret.add_state("q" + i);
+			it.next();
 		}
 
 		// Adds the final state and turn it into an accept state
@@ -563,14 +581,18 @@ public class ENFA {
 			for (int k = 1; it1.hasNext(); k++) {
 				String key = state1 + "." + it1.next();
 				if (enfa1.transitions.containsKey(key)) {
-					transition[0] = "q" + j; // state
-					transition[1] = enfa1.transitions.get(key); // symbol
+					TreeSet<String> symbols= enfa1.transitions.get(key); // symbol
 																// (Epsilon)
-					transition[2] = "q" + k; // result
-					try {
-						ret.add_transition(transition);
-					} catch (InvalidTransitionException e) {
-						e.printStackTrace();
+					for(String symbol: symbols){
+						String [] transitionAux= new String[3];
+						transitionAux[0] = "q" + j;
+						transitionAux[1] = symbol;
+						transitionAux[2] = "q" + k;
+						try {
+							ret.add_transition(transition);
+						} catch (InvalidTransitionException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -608,4 +630,3 @@ public class ENFA {
 		return ret;
 	}
 }
-*/

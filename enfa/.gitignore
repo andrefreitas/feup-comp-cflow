@@ -1,5 +1,5 @@
-/DeadState.class
 /ENFA.class
 /InvalidStateException.class
+/DeadState.class
 /InvalidTransitionException.class
 /TestENFA.class
