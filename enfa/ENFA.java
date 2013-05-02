@@ -13,7 +13,7 @@ import enfa.InvalidTransitionException;
 public class ENFA {
 	private Set<String> states;
 	private Set<String> alphabet;
-	private HashMap<String, String> transitions;
+	private HashMap<String, TreeSet<String>> transitions;
 	private String initial_state;
 	private Set<String> accept_states;
 	private final String EPSILON = "";
@@ -24,7 +24,7 @@ public class ENFA {
 			Set<String> accept_states) throws Exception {
 		this.states = states;
 		this.alphabet = alphabet;
-		this.transitions = new HashMap<String, String>();
+		this.transitions = new HashMap<String, TreeSet<String>>();
 		set_transitions(transitions);
 		set_initial_state(initial_state);
 		set_accept_states(accept_states);
@@ -33,7 +33,7 @@ public class ENFA {
 	public ENFA() {
 		this.states = new TreeSet<String>();
 		this.alphabet = new TreeSet<String>();
-		this.transitions = new HashMap<String, String>();
+		this.transitions = new HashMap<String, TreeSet<String>>();
 		this.accept_states = new TreeSet<String>();
 	}
 
@@ -76,37 +76,51 @@ public class ENFA {
 
 		if (states.contains(state) && (alphabet.contains(symbol) || symbol==EPSILON)
 				&& states.contains(result)) {
-			transitions.put(state + "." + symbol, result);
+			if(transitions.get(state + "." + symbol) == null){
+				transitions.put(state + "." + symbol, new TreeSet<String>());
+			}
+			transitions.get(state + "." + symbol).add(result); 
 		} else
 			throw new InvalidTransitionException();
 
 	}
 
 	public boolean match(String string) {
-
 		String[] identifiers = string.split("\\.");
-
 		String state = initial_state;
+		return matchRecursive(state, identifiers,0);
+	}
+	
+	public boolean matchRecursive(String state, String[] identifiers, int index){
+		
+		if (accept_states.contains(state) && index==identifiers.length)
+			return true;
+		
 		try {
-			for (int i = 0; i < identifiers.length; ) {
 				isEpsilon = false;
-				state = get_next_state(state, identifiers[i]);
+				TreeSet<String> nextStates = get_next_state(state, identifiers[index]);
 				if(isEpsilon == false){
-					i++;
+					index = index + 1;
 				}
 				
-			}
+				boolean result = false;
+				for(String nextState: nextStates){
+					boolean match = matchRecursive(nextState, identifiers, index);
+					if (match == true) {
+						result = true;
+						break;
+					}
+				}
+				
+				return result;
+
+			
 		} catch (DeadState e) {
 			return false;
 		}
-
-		if (accept_states.contains(state))
-			return true;
-
-		return false;
 	}
 
-	private String get_next_state(String state, String symbol) throws DeadState {
+	private TreeSet<String> get_next_state(String state, String symbol) throws DeadState {
 		String key = state + "." + symbol;
 		String keyEpson = state + "." + EPSILON;
 		if (transitions.containsKey(key)) {
@@ -137,10 +151,11 @@ public class ENFA {
 			throw new InvalidStateException();
 		}
 	}
-	
+
 	/*
 	 * AINDA N�O EST� TESTADO ... Mas d�em uma vista de olhos para ver se � isto que se tem que fazer :)	
 	 */
+	/*
 	public static ENFA operator_and(ENFA enfa1,ENFA enfa2) {
 		ENFA ret = new ENFA();
 		Iterator<String> it,it1;
@@ -266,6 +281,6 @@ public class ENFA {
 		}
 		
 		return ret;
-	}
+	}*/
 
 }

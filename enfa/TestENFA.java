@@ -14,6 +14,7 @@ public class TestENFA extends TestCase {
 		/* States */
 		Set<String> states = new TreeSet<String>();
 		states.add("q0");
+		states.add("q1");
 		states.add("q2");
 		states.add("q3");
 		states.add("q4");
@@ -25,10 +26,14 @@ public class TestENFA extends TestCase {
 
 		/* Transitions */
 		ArrayList<String[]> transitions = new ArrayList<String[]>();
-		String[] t1 = { "q0", "a", "q2" };
+
+		
+		String[] t1 = { "q0", "a", "q1" };
+		String[] t2 = { "q0", "a", "q2" };
 		String[] t3 = { "q2", "", "q3" };
 		String[] t4 = { "q3", "b", "q4" };
 		transitions.add(t1);
+		transitions.add(t2);
 		transitions.add(t3);
 		transitions.add(t4);
 
@@ -38,6 +43,7 @@ public class TestENFA extends TestCase {
 		/* Accept States */
 		Set<String> accept_states = new TreeSet<String>();
 		accept_states.add("q4");
+		accept_states.add("q1");
 
 		/* Create ENFA */
 		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
@@ -45,6 +51,7 @@ public class TestENFA extends TestCase {
 
 		/* Test */
 		assertTrue(d1.match("a.b"));
+		assertTrue(d1.match("a"));
 
 	}
 
