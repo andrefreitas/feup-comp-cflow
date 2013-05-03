@@ -68,6 +68,13 @@ public class TestENFA extends TestCase {
 		ENFA d3 = ENFA.operator_and(d1, d2);
 		
 		assertTrue(d3.match("a.b.a"));
+
+		ENFA d4 = ENFA.operator_or(d1, d2);
+		assertFalse(d4.match("a.b.a.c")); // confirmar
+		assertTrue(d4.match("a.b"));
+		assertTrue(d4.match("a"));
+		assertTrue(d4.match("a.b.a.b.a.b.a"));
+		
 		
 	}
 }
