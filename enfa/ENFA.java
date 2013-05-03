@@ -324,7 +324,9 @@ public class ENFA {
 	}
 
 	public static ENFA operator_star(ENFA enfa1) {
-		ENFA ret = new ENFA();
+		
+		return null;
+		/*ENFA ret = new ENFA();
 		Iterator<String> it, it1;
 
 		// Adds all the identifiers on the alphabet of enfa1 and enfa2 to the
@@ -433,7 +435,7 @@ public class ENFA {
 			e.printStackTrace();
 		}
 
-		return ret;
+		return ret;*/
 	}
 
 	// Nao testado ainda
