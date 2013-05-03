@@ -89,14 +89,16 @@ public class ENFA {
 	}
 
 	public boolean matchRecursive(String state, String[] identifiers, int index) {
-
+		
 		if (accept_states.contains(state) && index == identifiers.length)
 			return true;
 
 		try {
 			isEpsilon = false;
 			TreeSet<String> nextStates = get_next_state(state,
-					identifiers[index]);
+					identifiers, index);
+			
+		
 			if (isEpsilon == false) {
 				index = index + 1;
 			}
@@ -116,13 +118,19 @@ public class ENFA {
 		}
 	}
 
-	private TreeSet<String> get_next_state(String state, String symbol)
+	private TreeSet<String> get_next_state(String state, String[] identifiers, int index)
 			throws DeadState {
-		String key = state + "." + symbol;
+		
+		if (index < identifiers.length) { 
+			String key = state + "." + identifiers[index];
+			if (transitions.containsKey(key)) {
+					return transitions.get(key);
+			}
+		}
+		
 		String keyEpson = state + "." + EPSILON;
-		if (transitions.containsKey(key)) {
-			return transitions.get(key);
-		} else if (transitions.containsKey(keyEpson)) {
+		
+		if (transitions.containsKey(keyEpson)) {
 			isEpsilon = true;
 			return transitions.get(keyEpson);
 		}
