@@ -75,6 +75,12 @@ public class TestENFA extends TestCase {
 		assertTrue(d4.match("a"));
 		assertTrue(d4.match("a.b.a.b.a.b.a"));
 		
-		
+		ENFA d5 = ENFA.operator_star(d1);
+		assertTrue(d5.match("a.b"));
+		assertTrue(d5.match("a.b.a.b"));
+		assertTrue(d5.match("a.b.a.b.a.b"));
+		assertTrue(d5.match("a.b.a.b.a.b.a.b"));
+		assertTrue(d5.match("a.a.a.a.a.a.a"));
+		assertTrue(d5.match("a.a.b"));
 	}
 }
