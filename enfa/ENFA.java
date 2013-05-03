@@ -165,28 +165,71 @@ public class ENFA {
 		ENFA ret = new ENFA();
 
 		Set<String> alphabet_temp = enfa1.alphabet;
+		alphabet_temp.addAll(enfa2.alphabet);
+		ret.alphabet = alphabet_temp;
+		
+		String prefix1 = getNewPrefix();
+		String prefix2 = getNewPrefix();
+		
+		Set<String> states_t = addPrefixStates(enfa1.states, prefix1);
+		HashMap<String, TreeSet<String>> transitions_t = addPrefixTransitions(enfa1.transitions, prefix1);
+		Set<String> states2 = addPrefixStates(enfa2.states, prefix2);
+		HashMap<String, TreeSet<String>> transitions2 = addPrefixTransitions(enfa2.transitions, prefix2);
 
-		if (!alphabet_temp.addAll(enfa2.alphabet)) {
-			return null;
-		}
-
-		Set<String> states_t = addPrefixStates(enfa1.states);
-		Set<String> states2 = addPrefixStates(enfa2.states);
-
-		if (!states_t.addAll(states2)) {
-			return null;
-		}
+		states_t.addAll(states2);
 
 		ret.states = states_t;
-
-		HashMap<String, TreeSet<String>> transitions_t = addPrefixTransitions(enfa1.transitions);
-		HashMap<String, TreeSet<String>> transitions2 = addPrefixTransitions(enfa2.transitions);
+		
 		transitions_t.putAll(transitions2);
 
 		ret.transitions = transitions_t;
 
 		ret.add_state("q0");
 		ret.add_state("q1");
+		
+		ret.initial_state = "q0";
+		Set<String> finalStates = new TreeSet<String>();
+		finalStates.add("q1");
+		ret.accept_states = finalStates;
+		
+		// add initial transition
+		String[] startTransition = {"q0", EPSILON, prefix1+enfa1.initial_state};
+		try {
+			ret.add_transition(startTransition);
+		} catch (InvalidTransitionException e) {
+			System.out.println("Problemas transição inicial AND!");
+			e.printStackTrace();
+		}
+		
+		// add transitions between enfa1 and enfa2
+		Iterator<String> it = enfa1.accept_states.iterator();
+		
+		for(; it.hasNext();) {
+			String[] transition_t = {prefix1+it.next(), EPSILON, prefix2+enfa2.initial_state};
+			try {
+				ret.add_transition(transition_t);
+			} catch (InvalidTransitionException e) {
+				System.out.println("Problemas transições entre enfa1 e enfa2");
+				e.printStackTrace();
+			}
+		}
+		
+		// add final transition
+		
+		// add final transitions between enfa2 and end state
+		it = enfa2.accept_states.iterator();
+		
+		for(; it.hasNext();) {
+			String[] transition_t = {prefix2+it.next(), EPSILON, "q1"};
+			try {
+				ret.add_transition(transition_t);
+			} catch (InvalidTransitionException e) {
+				System.out.println("Problemas transições entre enfa2 e end state");
+				e.printStackTrace();
+			}
+		}
+		
+		
 		return ret;
 
 		/*
@@ -784,16 +827,6 @@ public class ENFA {
 		return current;
 	}
 
-	public static void addPrefix(ENFA enfa, Set<String> states_t,
-			HashMap<String, TreeSet<String>> transitions_t, String prefix) {
-
-		prefix = "p" + prefix_index;
-		prefix_index++;
-
-		states_t = addPrefixStates(enfa.states, prefix);
-		transitions_t = addPrefixTransitions(enfa.transitions, prefix);
-	}
-
 	public static HashMap<String, TreeSet<String>> addPrefixTransitions(
 			HashMap<String, TreeSet<String>> transitions_t, String prefix) {
 
@@ -831,6 +864,12 @@ public class ENFA {
 			temp.add(prefix + it.next());
 		}
 
+		return temp;
+	}
+	
+	public static String getNewPrefix() {
+		String temp = "p" + prefix_index;
+		prefix_index++;
 		return temp;
 	}
 }
