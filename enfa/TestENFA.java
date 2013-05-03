@@ -1,7 +1,6 @@
 package enfa;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -82,5 +81,87 @@ public class TestENFA extends TestCase {
 		assertTrue(d5.match("a.b.a.b.a.b.a.b"));
 		assertTrue(d5.match("a.a.a.a.a.a.a"));
 		assertTrue(d5.match("a.a.b"));
+		assertTrue(d5.match(""));
+		
+		ENFA d6 = ENFA.operator_plus(d1);
+		assertTrue(d6.match("a.b"));
+		assertTrue(d6.match("a.b.a.b"));
+		assertTrue(d6.match("a.b.a.b.a.b"));
+		assertTrue(d6.match("a.b.a.b.a.b.a.b"));
+		assertTrue(d6.match("a.a.a.a.a.a.a"));
+		assertTrue(d6.match("a.a.b"));
+		assertFalse(d6.match(""));
+		
+		/* States */
+		Set<String> states_1 = new TreeSet<String>();
+		states_1.add("q0");
+		states_1.add("q1");
+		states_1.add("q2");
+		states_1.add("q3");
+
+		/* Alphabet */
+		Set<String> alphabet_1 = new TreeSet<String>();
+		alphabet_1.add("a");
+		alphabet_1.add("b");
+		alphabet_1.add("c");
+
+		/* Transitions */
+		ArrayList<String[]> transitions_1 = new ArrayList<String[]>();
+
+		
+		String[] a1 = { "q0", "a", "q1" };
+		String[] a2 = { "q1", "b", "q2" };
+		String[] a3 = { "q2", "c", "q3" };
+		transitions_1.add(a1);
+		transitions_1.add(a2);
+		transitions_1.add(a3);
+		
+		/* Initial State */
+		String initial_state_1 = "q0";
+
+		/* Accept States */
+		Set<String> accept_states_1 = new TreeSet<String>();
+		accept_states_1.add("q3");
+
+		/* Create ENFA */
+		ENFA teste = new ENFA(states_1, alphabet_1, transitions_1, initial_state_1,
+				accept_states_1);
+		
+		ENFA d7 = ENFA.operator_questionm(teste);
+		assertFalse(d7.match("a.b"));
+		assertTrue(d7.match(""));
+		assertTrue(d7.match("a.b.c"));
+		assertFalse(d7.match("a.b.c.a.b.c"));
+		assertFalse(d7.match("a"));
+		
+		ENFA d8 = ENFA.operator_times(teste, 3);
+		assertFalse(d8.match("a.b.c"));
+		assertFalse(d8.match("a.b.c.a.b.c"));
+		assertTrue(d8.match("a.b.c.a.b.c.a.b.c"));
+		assertFalse(d8.match("a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertFalse(d8.match("a"));
+		assertFalse(d8.match("a.a.b"));
+		assertFalse(d8.match(""));
+		
+		ENFA d9 = ENFA.operator_timesleft(teste, 3);
+		assertFalse(d9.match("a.b.c"));
+		assertFalse(d9.match("a.b.c.a.b.c"));
+		assertTrue(d9.match("a.b.c.a.b.c.a.b.c"));
+		assertTrue(d9.match("a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertTrue(d9.match("a.b.c.a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertFalse(d9.match("a"));
+		assertFalse(d9.match("a.a.b"));
+		assertFalse(d9.match(""));
+		
+		ENFA d10 = ENFA.operator_timesint(teste, 3, 5);
+		assertFalse(d10.match("a.b.c"));
+		assertFalse(d10.match("a.b.c.a.b.c"));
+		assertTrue(d10.match("a.b.c.a.b.c.a.b.c"));
+		assertTrue(d10.match("a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertTrue(d10.match("a.b.c.a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertFalse(d10.match("a.b.c.a.b.c.a.b.c.a.b.c.a.b.c.a.b.c"));
+		assertFalse(d10.match("a"));
+		assertFalse(d10.match("a.a.b"));
+		assertFalse(d10.match(""));
 	}
 }
