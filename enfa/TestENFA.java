@@ -61,5 +61,13 @@ public class TestENFA extends TestCase {
 		assertTrue(d1.match("a.b"));
 		assertTrue(d1.match("a.b.a.b.a.b.a"));
 		assertTrue(d1.match("a"));
+		
+		ENFA d2 = new ENFA(states, alphabet, transitions, initial_state,
+				accept_states);
+		
+		ENFA d3 = ENFA.operator_and(d1, d2);
+		
+		assertTrue(d3.match("a.b.a"));
+		
 	}
 }
