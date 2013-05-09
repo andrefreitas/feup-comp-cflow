@@ -155,7 +155,6 @@ public class SimpleNode implements Node {
 
 	public ENFA parseENFA() throws Exception {
 		ENFA tempENFA = new ENFA();
-		
 		switch(op) {
 		case(ID): {
 			System.out.println("ID: " + identifier);
@@ -187,6 +186,11 @@ public class SimpleNode implements Node {
 			for (int i = 0; i < children.length; ++i) {
 				SimpleNode n = (SimpleNode) children[i];
 				if (n != null) {
+					if (n.op == -1 && n.timesType == -1) {
+						i++;
+						break;
+					}
+						
 					switch(op) {
 						case(OR): {
 							isOp = true;
