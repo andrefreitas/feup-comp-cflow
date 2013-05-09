@@ -180,6 +180,47 @@ public class SimpleNode implements Node {
 		default:
 			break;
 		}
+		
+
+			switch(timesType) {
+				case(PLUS): {
+					tempENFA = ENFA.operator_plus(tempENFA);
+					System.out.println("ONCE OR MORE TIMES");
+				}
+
+				break;
+				case(STAR): {
+					tempENFA = ENFA.operator_star(tempENFA);
+					System.out.println("ZERO OR MORE TIMES");
+				}
+
+				break;
+				case(QUESTIONM): {
+					tempENFA = ENFA.operator_questionm(tempENFA);
+					System.out.println("ZERO OR ONCE");
+				}
+
+				break;
+				case(TIMES): {
+					tempENFA = ENFA.operator_times(tempENFA, timLeft);
+					System.out.println("TIMES {" + timLeft + "}");
+				}
+
+				break;
+				case(TIMESLEFT): {
+					tempENFA = ENFA.operator_timesleft(tempENFA, timLeft);
+					System.out.println("TIMESLEFT {" + timLeft + ",}");
+				}
+				break;
+				case(TIMESINT): {
+					tempENFA = ENFA.operator_timesint(tempENFA, timLeft, timRight);
+					System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
+				}
+
+				break;
+				default:
+					break;
+				}
 
 		boolean isOp = false;
 		if (children != null) {
@@ -224,52 +265,6 @@ public class SimpleNode implements Node {
 
 					if (!isOp)
 						tempENFA = n.parseENFA();
-					
-					if (i < children.length-1) {
-						SimpleNode n2 = (SimpleNode) children[i+1];
-						if (n2.timesType != -1) {
-							i++;
-							switch(n2.timesType) {
-							case(PLUS): {
-								tempENFA = ENFA.operator_plus(tempENFA);
-								System.out.println("ONCE OR MORE TIMES");
-							}
-
-							break;
-							case(STAR): {
-								tempENFA = ENFA.operator_star(tempENFA);
-								System.out.println("ZERO OR MORE TIMES");
-							}
-
-							break;
-							case(QUESTIONM): {
-								tempENFA = ENFA.operator_questionm(tempENFA);
-								System.out.println("ZERO OR ONCE");
-							}
-
-							break;
-							case(TIMES): {
-								tempENFA = ENFA.operator_times(tempENFA, n2.timLeft);
-								System.out.println("TIMES {" + n2.timLeft + "}");
-							}
-
-							break;
-							case(TIMESLEFT): {
-								tempENFA = ENFA.operator_timesleft(tempENFA, n2.timLeft);
-								System.out.println("TIMESLEFT {" + n2.timLeft + ",}");
-							}
-							break;
-							case(TIMESINT): {
-								tempENFA = ENFA.operator_timesint(tempENFA, n2.timLeft, n2.timRight);
-								System.out.println("TIMESINT {" + n2.timLeft + "," + n2.timRight + "}");
-							}
-
-							break;
-							default:
-								break;
-							}
-						}
-					}
 				}
 			}
 		}

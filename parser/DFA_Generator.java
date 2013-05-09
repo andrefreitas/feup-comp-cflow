@@ -20,12 +20,10 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
                         root.dump("");
 
                         ENFA parser = root.parseENFA();
-
-                        if (parser.match("a.b.b.b.b.b.c"))
-                                System.out.println("YAYAYAYAYAY");
-                        else
-                                System.out.println("ohohohoho");
-
+                        if (parser.match("a.b.b.b.b.b.d.d"))
+                                 System.out.println("YAYAYAYAYAY");
+                         else
+                                 System.out.println("ohohohoho");
                         Set< String > alphabet = new TreeSet<String>();
                         Set< String > states = new TreeSet<String>();
                         HashMap< String, String > transitions = new HashMap<String, String>();
@@ -132,35 +130,27 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
   }
 
   static final public void Expr_Node() throws ParseException {
- Token t;
+ Token t; SimpleNode temp = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LEFT_PAR:
       jj_consume_token(LEFT_PAR);
       Expr_Main();
-                                      SimpleNode jjtn001 = new SimpleNode(JJTPAR);
-                                      boolean jjtc001 = true;
-                                      jjtree.openNodeScope(jjtn001);
-      try {
-        jj_consume_token(RIGHT_PAR);
-      } finally {
-                                      if (jjtc001) {
-                                        jjtree.closeNodeScope(jjtn001, true);
-                                      }
-      }
+      jj_consume_token(RIGHT_PAR);
       break;
     case IDENTIFIER:
       t = jj_consume_token(IDENTIFIER);
-          SimpleNode jjtn002 = new SimpleNode(JJTID);
-          boolean jjtc002 = true;
-          jjtree.openNodeScope(jjtn002);
+          SimpleNode jjtn001 = new SimpleNode(JJTID);
+          boolean jjtc001 = true;
+          jjtree.openNodeScope(jjtn001);
       try {
-          jjtree.closeNodeScope(jjtn002, true);
-          jjtc002 = false;
-                jjtn002.op = SimpleNode.ID;
-                jjtn002.identifier = t.image;
+          jjtree.closeNodeScope(jjtn001, true);
+          jjtc001 = false;
+                        temp = jjtn001;
+                jjtn001.op = SimpleNode.ID;
+                jjtn001.identifier = t.image;
       } finally {
-          if (jjtc002) {
-            jjtree.closeNodeScope(jjtn002, true);
+          if (jjtc001) {
+            jjtree.closeNodeScope(jjtn001, true);
           }
       }
       break;
@@ -174,64 +164,49 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
     case ZERO_OR_MORE:
     case ZERO_OR_ONE:
     case 14:
-           SimpleNode jjtn003 = new SimpleNode(JJTTIMES);
-           boolean jjtc003 = true;
-           jjtree.openNodeScope(jjtn003);
-      try {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ONE_OR_MORE:
+        jj_consume_token(ONE_OR_MORE);
+                        temp.timesType = SimpleNode.PLUS;
+        break;
+      case ZERO_OR_MORE:
+        jj_consume_token(ZERO_OR_MORE);
+                        temp.timesType = SimpleNode.STAR;
+        break;
+      case ZERO_OR_ONE:
+        jj_consume_token(ZERO_OR_ONE);
+                        temp.timesType = SimpleNode.QUESTIONM;
+        break;
+      case 14:
+        jj_consume_token(14);
+        t = jj_consume_token(NUMBER);
+                                        temp.timesType = SimpleNode.TIMES;
+                                        temp.timLeft = Integer.parseInt(t.image);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ONE_OR_MORE:
-          jj_consume_token(ONE_OR_MORE);
-          jjtree.closeNodeScope(jjtn003, true);
-          jjtc003 = false;
-                jjtn003.timesType = SimpleNode.PLUS;
-          break;
-        case ZERO_OR_MORE:
-          jj_consume_token(ZERO_OR_MORE);
-          jjtree.closeNodeScope(jjtn003, true);
-          jjtc003 = false;
-                jjtn003.timesType = SimpleNode.STAR;
-          break;
-        case ZERO_OR_ONE:
-          jj_consume_token(ZERO_OR_ONE);
-          jjtree.closeNodeScope(jjtn003, true);
-          jjtc003 = false;
-                jjtn003.timesType = SimpleNode.QUESTIONM;
-          break;
-        case 14:
-          jj_consume_token(14);
-          t = jj_consume_token(NUMBER);
-                                jjtn003.timesType = SimpleNode.TIMES;
-                                jjtn003.timLeft = Integer.parseInt(t.image);
+        case 15:
+          jj_consume_token(15);
+                                        temp.timesType = SimpleNode.TIMESLEFT;
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case 15:
-            jj_consume_token(15);
-                                jjtn003.timesType = SimpleNode.TIMESLEFT;
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case NUMBER:
-              t = jj_consume_token(NUMBER);
-                                        jjtn003.timesType = SimpleNode.TIMESINT;
-                                        jjtn003.timRight = Integer.parseInt(t.image);
-              break;
-            default:
-              jj_la1[3] = jj_gen;
-              ;
-            }
+          case NUMBER:
+            t = jj_consume_token(NUMBER);
+                                                temp.timesType = SimpleNode.TIMESINT;
+                                                temp.timRight = Integer.parseInt(t.image);
             break;
           default:
-            jj_la1[4] = jj_gen;
+            jj_la1[3] = jj_gen;
             ;
           }
-          jj_consume_token(16);
           break;
         default:
-          jj_la1[5] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+          jj_la1[4] = jj_gen;
+          ;
         }
-      } finally {
-           if (jjtc003) {
-             jjtree.closeNodeScope(jjtn003, true);
-           }
+        jj_consume_token(16);
+        break;
+      default:
+        jj_la1[5] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
       break;
     default:
