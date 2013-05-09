@@ -21,7 +21,7 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
 
                         ENFA parser = root.parseENFA();
 
-                        if (parser.match("a"))
+                        if (parser.match("a.a.a"))
                                 System.out.println("YAYAYAYAYAY");
                         else
                                 System.out.println("ohohohoho");

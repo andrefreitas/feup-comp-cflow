@@ -182,7 +182,6 @@ public class SimpleNode implements Node {
 			break;
 		}
 
-		ENFA enfa1 = new ENFA();
 		boolean isOp = false;
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
@@ -193,11 +192,11 @@ public class SimpleNode implements Node {
 							isOp = true;
 							if (i == 0) {
 								System.out.println("OR");
-								enfa1 = n.parseENFA();
+								tempENFA = n.parseENFA();
 							}
 							else {
 								ENFA enfa2 = n.parseENFA();
-								tempENFA = ENFA.operator_or(enfa1, enfa2);
+								tempENFA = ENFA.operator_or(tempENFA, enfa2);
 							}
 						}
 						break;
@@ -206,11 +205,11 @@ public class SimpleNode implements Node {
 							isOp = true;
 							if (i == 0) {
 								System.out.println("AND");
-								enfa1 = n.parseENFA();
+								tempENFA = n.parseENFA();
 							}
 							else {
 								ENFA enfa2 = n.parseENFA();
-								tempENFA = ENFA.operator_and(enfa1, enfa2);
+								tempENFA = ENFA.operator_and(tempENFA, enfa2);
 							}
 						}
 						break;
