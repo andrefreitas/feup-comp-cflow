@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ArrayList;
-
+import enfa.ENFA;
 import java.util.Iterator;
 
 public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants, DFA_GeneratorConstants {/*@bgen(jjtree)*/
@@ -18,6 +18,14 @@ public class DFA_Generator/*@bgen(jjtree)*/implements DFA_GeneratorTreeConstants
                         SimpleNode root = DFA_Generator.Start();
 
                         root.dump("");
+
+                        ENFA parser = root.parseENFA();
+
+                        if (parser.match("a"))
+                                System.out.println("YAYAYAYAYAY");
+                        else
+                                System.out.println("ohohohoho");
+
                         Set< String > alphabet = new TreeSet<String>();
                         Set< String > states = new TreeSet<String>();
                         HashMap< String, String > transitions = new HashMap<String, String>();
