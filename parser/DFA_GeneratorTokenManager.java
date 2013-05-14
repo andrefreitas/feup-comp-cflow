@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.HashMap;
 import java.util.ArrayList;
+import enfa.ENFA;
 import java.util.Iterator;
 
 /** Token Manager. */

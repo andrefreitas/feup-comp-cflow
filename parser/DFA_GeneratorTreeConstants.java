@@ -7,9 +7,7 @@ public interface DFA_GeneratorTreeConstants
   public int JJTVOID = 1;
   public int JJTOR = 2;
   public int JJTAND = 3;
-  public int JJTPAR = 4;
-  public int JJTID = 5;
-  public int JJTTIMES = 6;
+  public int JJTID = 4;
 
 
   public String[] jjtNodeName = {
@@ -17,9 +15,7 @@ public interface DFA_GeneratorTreeConstants
     "void",
     "OR",
     "AND",
-    "PAR",
     "ID",
-    "TIMES",
   };
 }
-/* JavaCC - OriginalChecksum=49cb0b7942508a0db5fa509fc681c3af (do not edit this line) */
+/* JavaCC - OriginalChecksum=0ead15735f28c2aa16d90d70428fc023 (do not edit this line) */
