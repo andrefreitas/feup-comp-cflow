@@ -5,3 +5,5 @@
 /InvalidStateException.class
 /InvalidTransitionException.class
 /TestDFA.class
+/AddHoursToCurrentDate.class
+/AddSecondsToCurrentDate.class

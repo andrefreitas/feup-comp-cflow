@@ -1,3 +1,4 @@
+package preprocessor;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -8,8 +9,15 @@ import java.io.IOException;
 public class PreProcessor {
 	private String regex;
 	
-	public PreProcessor(String regex) {
-		this.regex = regex;
+	public PreProcessor() {
+	}
+
+	public void run(String[] args) {
+		regex = args[0];
+		for(int i = 1; i < args.length; i++) {
+			String input = read_file(args[i]);
+		    write_new_file(args[i].substring(0, args[i].lastIndexOf('.'))+"_cflow.java", input);
+		}
 	}
 	
 	public String read_file(String fileName) {
@@ -68,13 +76,6 @@ public class PreProcessor {
 		}
 		return returnValue;
 	}
-
-	private int how_many_tabs(String line) {
-		int returnValue = 0;
-		while (line.charAt(returnValue) == '\t')
-			returnValue++;
-		return returnValue;
-	}
 	
 	private int check_curly_brackets(String line) {
 		int returnValue = 0;
@@ -87,10 +88,9 @@ public class PreProcessor {
 		return returnValue;
 	}
 
-	private String lexical_converter(String returnValue, String line, BufferedReader reader) {		
-		if (line.length() > 8 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
-			for (int tabs = how_many_tabs(line); tabs > 0; tabs--)
-				returnValue += "\t";
+	private String lexical_converter(String returnValue, String line, BufferedReader reader) {
+		System.out.println(line);
+		if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
 			returnValue += "Automata.transiction(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 		}
 		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){")) {
@@ -105,6 +105,9 @@ public class PreProcessor {
 				block += check_curly_brackets(line);
 				if(block == 0) {
 					returnValue += "\tAutomata.show_result();\n" + line + "\n";
+				}
+				else if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
+					returnValue += "Automata.transiction(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 				}
 				else {
 					returnValue += line + "\n";
