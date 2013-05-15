@@ -34,6 +34,14 @@ public class ENFA {
 		this.accept_states = new TreeSet<String>();
 	}
 
+	public String get_initial_state() {
+		return initial_state;
+	}
+	
+	public Set<String> get_accept_states() {
+		return accept_states;
+	}
+	
 	private void set_accept_states(Set<String> accept_states)
 			throws InvalidStateException {
 		if (this.states.containsAll(accept_states)) {
@@ -88,7 +96,7 @@ public class ENFA {
 		String state = initial_state;
 		return matchRecursive(state, identifiers, 0);
 	}
-
+	
 	public boolean matchRecursive(String state, String[] identifiers, int index) {
 
 		if (accept_states.contains(state) && index == identifiers.length)
@@ -116,6 +124,31 @@ public class ENFA {
 		} catch (DeadState e) {
 			return false;
 		}
+	}
+
+	public TreeSet<String> step_forward(TreeSet<String> states, String identifier) {
+		TreeSet<String> children = new TreeSet<String>();
+		
+		String[] identifiers = {identifier};
+		for (String state: states) {
+			try {
+				isEpsilon = false;
+				TreeSet<String> nextStates = get_next_state(state, identifiers, 0);
+				if (isEpsilon) {
+					children.addAll(step_forward(nextStates, identifier));
+				}
+				else {
+					children.addAll(nextStates);
+				}
+				
+			}
+			catch (DeadState d) {
+				d.printStackTrace();
+			}
+		}
+		
+		return children;
+		
 	}
 
 	private TreeSet<String> get_next_state(String state, String[] identifiers,

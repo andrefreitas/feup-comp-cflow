@@ -7,13 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class PreProcessor {
-	private String regex;
 	
 	public PreProcessor() {
 	}
 
 	public void run(String[] args) {
-		regex = args[0];
 		for(int i = 1; i < args.length; i++) {
 			String input = read_file(args[i]);
 		    write_new_file(args[i].substring(0, args[i].lastIndexOf('.'))+"_cflow.java", input);
@@ -91,11 +89,11 @@ public class PreProcessor {
 	private String lexical_converter(String returnValue, String line, BufferedReader reader) {
 		System.out.println(line);
 		if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
-			returnValue += "Automata.transiction(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
+			returnValue += "Cflow.transition(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 		}
 		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){")) {
 			int block = 1;
-			returnValue += line + "\n" + "\t\tAutomata.set_re(\"" + regex + "\");\n";
+			returnValue += line + "\n";
 			while(block > 0) {
 				try {
 					line = reader.readLine();
@@ -104,10 +102,10 @@ public class PreProcessor {
 				}
 				block += check_curly_brackets(line);
 				if(block == 0) {
-					returnValue += "\tAutomata.show_result();\n" + line + "\n";
+					returnValue += "\tCflow.show_result();\n" + line + "\n";
 				}
 				else if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
-					returnValue += "Automata.transiction(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
+					returnValue += "Cflow.transition(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 				}
 				else {
 					returnValue += line + "\n";

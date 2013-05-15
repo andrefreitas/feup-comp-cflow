@@ -3,3 +3,4 @@
 /DeadState.class
 /InvalidTransitionException.class
 /TestENFA.class
+/MatchException.class
