@@ -22,3 +22,14 @@
 /Node.java
 /SimpleNode.java
 /TestParser.class
+/RegexParser.jj
+/JJTRegexParserState.java
+/RegexParser.java
+/RegexParserConstants.java
+/RegexParserTokenManager.java
+/RegexParserTreeConstants.java
+/JJTRegexParserState.class
+/RegexParser.class
+/RegexParserConstants.class
+/RegexParserTokenManager.class
+/RegexParserTreeConstants.class

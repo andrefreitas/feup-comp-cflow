@@ -13,7 +13,7 @@ public class SimpleNode implements Node {
 	protected Node[] children;
 	protected int id;
 	protected Object value;
-	protected DFA_Generator parser;
+	protected RegexParser parser;
 
 	public static final int OR = 0;
 	public static final int AND = 1;
@@ -41,7 +41,7 @@ public class SimpleNode implements Node {
 		id = i;
 	}
 
-	public SimpleNode(DFA_Generator p, int i) {
+	public SimpleNode(RegexParser p, int i) {
 		this(i);
 		parser = p;
 	}
@@ -95,7 +95,7 @@ public class SimpleNode implements Node {
 	 */
 
 	public String toString() {
-		return DFA_GeneratorTreeConstants.jjtNodeName[id];
+		return RegexParserTreeConstants.jjtNodeName[id];
 	}
 
 	public String toString(String prefix) {

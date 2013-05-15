@@ -1,0 +1,156 @@
+options
+{
+  LOOKAHEAD = 1;
+  //FORCE_LA_CHECK = true;
+}
+
+PARSER_BEGIN(RegexParser)
+package parser;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.ArrayList;
+import enfa.ENFA;
+import java.util.Iterator;
+
+public class RegexParser
+{
+        public static void main(String args [])
+        {
+                new RegexParser(System.in);
+                try
+                {
+                        System.out.print("Give the expression: ");
+                              
+                        SimpleNode root = RegexParser.Start();
+                        
+                        root.dump("");
+
+                        ENFA parser = root.parseENFA();
+                        if (parser.match("a.b.b.b.b.b.d.d"))
+                                 System.out.println("YAYAYAYAYAY");
+                         else
+                                 System.out.println("ohohohoho");
+                        Set< String > alphabet = new TreeSet<String>();
+                        Set< String > states = new TreeSet<String>();
+                        HashMap< String, String > transitions = new HashMap<String, String>();
+                        Set< String > accept_states = new TreeSet<String>();
+                        String initialState = "q0";
+                        states.add(initialState);
+                        root.parseDFA(alphabet, states, transitions, accept_states);
+
+                        System.out.println("Alphabet:");
+                        for (Iterator<String> it = alphabet.iterator(); it.hasNext(); ) {
+                        String f = it.next();
+                        System.out.println(f);
+                    }
+                }
+                catch (Exception e)
+                {
+                        System.out.println("Oops.");
+                        System.out.println(e.getMessage());
+                }
+        }
+}
+
+PARSER_END(RegexParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+}
+
+TOKEN : 
+{
+        < NUMBER : (["0"-"9"])+ >
+        | < IDENTIFIER : ["A"-"Z","a"-"z"] (["A"-"Z","a"-"z","0"-"9"])* >
+        | < SEPARATOR : ".">
+        | < OR :"|" >
+        | < ONE_OR_MORE :"+" >
+        | < ZERO_OR_MORE :"*" >
+        | < ZERO_OR_ONE :"?" >
+        | < LEFT_PAR: "(" >
+        | < RIGHT_PAR: ")" >
+        | < NLINE : "\n" >
+}
+
+SimpleNode Start() :
+{}
+{
+  Expr_Main() < NLINE >
+         {
+                System.out.println("ok");
+                return jjtThis;
+        }  
+}
+
+void Expr_Main() #void : 
+{} 
+{
+        Expr_Concat() ("|" Expr_Main()
+        {
+                jjtThis.op = SimpleNode.OR;
+        } #OR(2))?
+} 
+
+void Expr_Concat() #void:
+{}
+{
+        Expr_Node() ("." Expr_Main()
+        {
+                jjtThis.op = SimpleNode.AND;
+        } #AND(2))?
+}
+
+void Expr_Node() #void:
+{Token t; SimpleNode temp = null;}
+{
+        ( (< LEFT_PAR > Expr_Main() < RIGHT_PAR >)
+        | (t = < IDENTIFIER >
+        {
+          		temp = jjtThis;
+                jjtThis.op = SimpleNode.ID;
+                jjtThis.identifier = t.image;
+        } #ID))
+        ((< ONE_OR_MORE >
+        {
+        		temp.timesType = SimpleNode.PLUS;
+
+        }
+        | < ZERO_OR_MORE >
+        {
+          		temp.timesType = SimpleNode.STAR;
+
+        }
+        | < ZERO_OR_ONE >
+        {
+          		temp.timesType = SimpleNode.QUESTIONM;
+               
+        }
+        | ("{" t = < NUMBER >
+                        {
+                          		temp.timesType = SimpleNode.TIMES;
+                          		temp.timLeft = Integer.parseInt(t.image);
+                                
+                        }
+
+                (
+                  ","
+                        {
+                          		temp.timesType = SimpleNode.TIMESLEFT;
+                                
+                        }
+        
+                        (
+                          t = < NUMBER >
+                                {
+                                  		temp.timesType = SimpleNode.TIMESINT;
+                                  		temp.timRight = Integer.parseInt(t.image);
+                                        
+                                }
+                        )?
+                )?
+        "}") ))?
+}
