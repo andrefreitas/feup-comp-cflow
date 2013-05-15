@@ -51,6 +51,16 @@ public class RegexParser
                         System.out.println(e.getMessage());
                 }
         }
+        public ENFA getENFA(){
+        	try  {			SimpleNode root = RegexParser.Start();
+            return root.parseENFA();
+          }
+          catch (Exception e){
+                  System.out.println(e.getMessage());
+                  return null;
+                  
+          }
+       }
 }
 
 PARSER_END(RegexParser)

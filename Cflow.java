@@ -14,5 +14,6 @@ public class Cflow {
 		String regex = args[0];
 		InputStream is = new ByteArrayInputStream(regex.getBytes());
 		RegexParser parser = new RegexParser(is);
+		Cflow.automata = parser.par
 	}
 }
