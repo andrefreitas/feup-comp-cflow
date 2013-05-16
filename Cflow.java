@@ -22,6 +22,7 @@ public class Cflow {
 		// (2) Create cflow dir
 		try{
 			Runtime.getRuntime().exec("cmd /C mkdir cflow");
+			Runtime.getRuntime().exec("cmd /C cp cflow.jar cflow");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

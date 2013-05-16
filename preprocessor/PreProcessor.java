@@ -14,7 +14,7 @@ public class PreProcessor {
 	public void run(String[] args) {
 		for(int i = 1; i < args.length; i++) {
 			String input = read_file(args[i]);
-		    write_new_file("cflow/" + args[i], input);
+		    write_new_file("cflow\\" + args[i], input);
 		}
 	}
 	
