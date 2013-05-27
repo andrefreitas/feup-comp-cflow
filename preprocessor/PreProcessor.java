@@ -1,4 +1,5 @@
 package preprocessor;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -6,15 +7,22 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import run.Cflow;
+
 public class PreProcessor {
+	private String fileName;
 	
 	public PreProcessor() {
 	}
 
 	public void run(String[] args) {
 		for(int i = 1; i < args.length; i++) {
+			if(args[i].lastIndexOf('\\') >= 0)
+				fileName = args[i].substring(args[i].lastIndexOf('\\'));
+			else
+				fileName = args[i];
 			String input = read_file(args[i]);
-		    write_new_file("cflow\\" + args[i], input);
+			write_new_file("cflow\\" + fileName, input);
 		}
 	}
 	
@@ -43,6 +51,7 @@ public class PreProcessor {
 				}
 			}
 		}
+		returnValue = "import cflow.run.Cflow;\n" + returnValue;
 		return returnValue;
 	}
 
@@ -87,11 +96,14 @@ public class PreProcessor {
 	}
 
 	private String lexical_converter(String returnValue, String line, BufferedReader reader) {
-		System.out.println(line);
 		if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
 			returnValue += "Cflow.transition(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 		}
-		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){")) {
+		else if(ignore_white_spaces(line).indexOf("package") >= 0) {
+			
+		}
+		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){") || ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(Stringargs[]){")) {
+			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.'));
 			int block = 1;
 			returnValue += line + "\n";
 			while(block > 0) {
