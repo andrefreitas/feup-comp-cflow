@@ -11,18 +11,23 @@ import run.Cflow;
 
 public class PreProcessor {
 	private String fileName;
+	private String className;
+	private String regex;
 	
 	public PreProcessor() {
 	}
 
 	public void run(String[] args) {
+		regex = args[0];
 		for(int i = 1; i < args.length; i++) {
 			if(args[i].lastIndexOf('\\') >= 0)
 				fileName = args[i].substring(args[i].lastIndexOf('\\'));
 			else
 				fileName = args[i];
+			className = fileName.substring(0, fileName.lastIndexOf('.'));
 			String input = read_file(args[i]);
-			write_new_file("cflow\\" + fileName, input);
+			fileName = className + "_cflow.java";
+			write_new_file(fileName, input);
 		}
 	}
 	
@@ -51,7 +56,7 @@ public class PreProcessor {
 				}
 			}
 		}
-		returnValue = "import cflow.run.Cflow;\n" + returnValue;
+		returnValue = "import run.Cflow;\n" + returnValue;
 		return returnValue;
 	}
 
@@ -96,16 +101,22 @@ public class PreProcessor {
 	}
 
 	private String lexical_converter(String returnValue, String line, BufferedReader reader) {
+		
 		if (ignore_white_spaces(line).length() > 9 && ignore_white_spaces(line).substring(0, 9).equalsIgnoreCase("//@BLOCK:")) {
 			returnValue += "Cflow.transition(\"" + ignore_white_spaces(line).substring(9) + "\");\n";
 		}
 		else if(ignore_white_spaces(line).indexOf("package") >= 0) {
 			
 		}
+		else if(ignore_white_spaces(line).indexOf(className) >= 0) {
+			line = line.substring(0,line.indexOf(className)) + className + "_cflow" + line.substring(line.indexOf(className)+className.length());
+			returnValue += line + "\n";
+		}
 		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){") || ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(Stringargs[]){")) {
-			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.'));
+			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
 			int block = 1;
 			returnValue += line + "\n";
+			returnValue += "Cflow.start(\"" + regex + "\");\n"; 
 			while(block > 0) {
 				try {
 					line = reader.readLine();

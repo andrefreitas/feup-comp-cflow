@@ -22,40 +22,17 @@ public class Cflow {
 	public static void main(String args[]) {
 		// (1) Convert file
 		PreProcessor myFile = new PreProcessor();
-		
-		// (2) Create cflow dir
-		try{
-			if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
-				Runtime.getRuntime().exec("cmd /C mkdir cflow");
-				Runtime.getRuntime().exec("cmd /C copy cflow.jar cflow");
-			}
-			else {
-				Runtime.getRuntime().exec("cmd /C mkdir cflow");
-				Runtime.getRuntime().exec("cmd /C cp cflow.jar cflow");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		// (3) Convert files
 		myFile.run(args);
-		String regex = args[0] + "\n";
-		start(regex);
 		
 		try {
-			Process p = Runtime.getRuntime().exec("cmd /C javac -cp cflow\\.;cflow.jar cflow\\*.java");
+			Process p = Runtime.getRuntime().exec("cmd /C javac -cp .;cflow.jar *_cflow.java");
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			String line = null;
 			while ((line = in.readLine()) != null) {
 				System.out.println(line);
 			}
-			p = Runtime.getRuntime().exec("cmd /C java -cp cflow\\.;cflow.jar " + Cflow.mainClass);
+			p = Runtime.getRuntime().exec("cmd /C java -cp .;cflow.jar " + Cflow.mainClass);
 			in = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			line = null;
@@ -68,6 +45,7 @@ public class Cflow {
 	}
 
 	public static void start(String regex) {
+		regex = regex + "\n";
 		InputStream is = new ByteArrayInputStream(regex.getBytes());
 		RegexParser parser = new RegexParser(is);
 		Cflow.automata = parser.getENFA();
