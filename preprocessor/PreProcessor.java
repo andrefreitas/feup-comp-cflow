@@ -112,7 +112,7 @@ public class PreProcessor {
 			line = line.substring(0,line.indexOf(className)) + className + "_cflow" + line.substring(line.indexOf(className)+className.length());
 			returnValue += line + "\n";
 		}
-		else if (ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(String[]args){") || ignore_white_spaces(line).equalsIgnoreCase("publicstaticvoidmain(Stringargs[]){")) {
+		else if (line.contains("main")) {
 			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
 			int block = 1;
 			returnValue += line + "\n";
