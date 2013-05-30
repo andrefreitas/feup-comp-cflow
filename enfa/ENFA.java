@@ -631,12 +631,45 @@ public class ENFA {
 		prefix_index++;
 		return temp;
 	}
+	
+	public TreeSet<String> get_closure(String state, String identifier) {
+		TreeSet<String> children = new TreeSet<String>();
+		children.add(state);
+		
+		TreeSet<String> transitionsState = transitions.get(state + "."
+				+ identifier);
+		TreeSet<String> transitionsEps = transitions.get(state + "." + "");
+
+		for (String dest : transitionsState) {
+			children.add(dest);
+		}
+
+		for (String dest : transitionsEps) {
+			children.addAll(get_closure(dest, identifier));
+		}
+		
+		// falta obter com as combinações
+
+		return children;
+	}
 
 	public DFA optimize() {
 		
 		DFA optimization = new DFA();
 		
+		//index by alphabet and then by state
+		HashMap<String, HashMap<String, Set<String>>> table = new HashMap<String, HashMap<String, Set<String>>>();
 		
+		for(String symbol: alphabet) {
+			HashMap<String, Set<String>> temp = new HashMap<String, Set<String>>();
+			
+			/*for(states) {
+				get_closure();
+				
+			}*/
+			
+			table.put(symbol, temp);
+		}
 
 		
 		return null;
