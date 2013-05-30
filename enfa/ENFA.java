@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
+import dfa.DFA;
+
 public class ENFA {
 	private Set<String> states;
 	private Set<String> alphabet;
@@ -628,5 +630,15 @@ public class ENFA {
 		String temp = "p" + prefix_index;
 		prefix_index++;
 		return temp;
+	}
+
+	public DFA optimize() {
+		
+		DFA optimization = new DFA();
+		
+		
+
+		
+		return null;
 	}
 }
