@@ -660,24 +660,39 @@ public class ENFA {
 
 		return children;
 	}
+	
+	TreeSet<TreeSet<String>> get_combinations(Set<String> statesToCombine, int n_elements) {
+		
+		if(statesToCombine.size() < n_elements)
+			return null;
+		
+		else {
+			TreeSet<TreeSet<String>> temp = new TreeSet<TreeSet<String>>();
+			//TODO: Fazer combinacoes
+			return temp;
+		}
+	}
 
 	public DFA optimize() {
 		
 		DFA optimization = new DFA();
 		
 		//index by alphabet and then by state
-		HashMap<String, HashMap<Set<String>, Set<String>>> table = new HashMap<String, HashMap<Set<String>, Set<String>>>();
+		HashMap<String, HashMap<TreeSet<String>, TreeSet<String>>> table = new HashMap<String, HashMap<TreeSet<String>, TreeSet<String>>>();
 		
 		for(String symbol: alphabet) {
-			HashMap<Set<String>, Set<String>> temp = new HashMap<Set<String>, Set<String>>();
+			HashMap<TreeSet<String>, TreeSet<String>> temp = new HashMap<TreeSet<String>, TreeSet<String>>();
 			
-			for(String state: states) {
+			for(int i = 0; i < states.size(); i++) {
+				TreeSet<TreeSet<String>> combs = get_combinations(states, i);
 				
-				TreeSet<String> statesKey = new TreeSet<String>();
-				statesKey.add(state);
-				TreeSet<String> closureForStates = get_closure(state, symbol);
+				for(TreeSet<String> statesCombined: combs) {
+					TreeSet<String> destinations = get_closure(statesCombined, symbol);
+					
+					temp.put(statesCombined, destinations);
+				}
 				
-				temp.put(statesKey, closureForStates);
+				
 			}
 			
 			table.put(symbol, temp);
