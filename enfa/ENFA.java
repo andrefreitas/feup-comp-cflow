@@ -632,6 +632,16 @@ public class ENFA {
 		return temp;
 	}
 	
+	public TreeSet<String> get_closure(Set<String> statesCombined, String identifier) {
+		TreeSet<String> children = new TreeSet<String>();
+		
+		for(String state : statesCombined) {
+			children.addAll(get_closure(state, identifier));
+		}
+		
+		return children;
+	}
+	
 	public TreeSet<String> get_closure(String state, String identifier) {
 		TreeSet<String> children = new TreeSet<String>();
 		children.add(state);
@@ -647,8 +657,6 @@ public class ENFA {
 		for (String dest : transitionsEps) {
 			children.addAll(get_closure(dest, identifier));
 		}
-		
-		// falta obter com as combinações
 
 		return children;
 	}
@@ -658,15 +666,19 @@ public class ENFA {
 		DFA optimization = new DFA();
 		
 		//index by alphabet and then by state
-		HashMap<String, HashMap<String, Set<String>>> table = new HashMap<String, HashMap<String, Set<String>>>();
+		HashMap<String, HashMap<Set<String>, Set<String>>> table = new HashMap<String, HashMap<Set<String>, Set<String>>>();
 		
 		for(String symbol: alphabet) {
-			HashMap<String, Set<String>> temp = new HashMap<String, Set<String>>();
+			HashMap<Set<String>, Set<String>> temp = new HashMap<Set<String>, Set<String>>();
 			
-			/*for(states) {
-				get_closure();
+			for(String state: states) {
 				
-			}*/
+				TreeSet<String> statesKey = new TreeSet<String>();
+				statesKey.add(state);
+				TreeSet<String> closureForStates = get_closure(state, symbol);
+				
+				temp.put(statesKey, closureForStates);
+			}
 			
 			table.put(symbol, temp);
 		}
