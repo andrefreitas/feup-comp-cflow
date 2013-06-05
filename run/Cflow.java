@@ -73,7 +73,7 @@ public class Cflow {
 		}
 
 		for (String state : states) {
-			String[] identifiers = { "" };
+			String[] identifiers = new String[0];
 			if (Cflow.automata.matchRecursive(state, identifiers, 0)) {
 				System.out.println("Flow accepted.");
 				return;

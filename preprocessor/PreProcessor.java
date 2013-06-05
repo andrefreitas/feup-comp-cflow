@@ -116,7 +116,14 @@ public class PreProcessor {
 			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
 			int block = 1;
 			returnValue += line + "\n";
-			returnValue += "Cflow.start(\"" + regex + "\");\n"; 
+			if(line.contains("{"))
+				returnValue += "Cflow.start(\"" + regex + "\");\n";
+			else
+				try {
+					returnValue += reader.readLine() + "\nCflow.start(\"" + regex + "\");\n";
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			while(block > 0) {
 				try {
 					line = reader.readLine();
