@@ -40,53 +40,55 @@ public class ENFA {
 		this.transitions = new HashMap<String, TreeSet<String>>();
 		this.accept_states = new TreeSet<String>();
 	}
-	
-	public void drawGraph() throws Exception{
-		 String outputFile = "automata.dotty";
-		 FileWriter fstream = new FileWriter(outputFile);
-		 BufferedWriter out = new BufferedWriter(fstream);
-		 out.write("digraph graphname {\n");
-		 
-		 // Accept states
-		 String initialState = get_initial_state();
-		 out.write("\tnode [shape = circle];\n");
-		 out.write("\tsize=\"8,5\"\n");
-		 for(String state: get_accept_states()){
-			 out.write("\t" + state + "[shape=doublecircle];\n");
-		 }
-		 
-		 // Add transitions
-		 for(String transition : transitions.keySet()){
-			 TreeSet<String> nextStates = transitions.get(transition);
-			 String [] elements = transition.split("\\.");
-			 String symbol = "EPSON";
-			 String state = elements[0];
-			 if (elements.length==2){
-				 symbol = elements[1];
-			 }
-			 // Add dotty transitions
-			 for(String nextState: nextStates){
-				 out.write("\t " + state + " -> " + nextState +" [label=\""+ symbol +"\"];\n");
-			 }
-		 }
-		 out.write("}");
-		 out.close();
-		 
-		 // Invoke dotty to draw
-		 display_dotty(outputFile);
-	}
-	
-	public void display_dotty(String fileName){
-		try{
-		
-		Process p = Runtime.getRuntime().exec("cmd /C graphviz\\bin\\dotty.exe " + fileName);
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				p.getInputStream()));
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			System.out.println(line);
+
+	public void drawGraph() throws Exception {
+		String outputFile = "automata.dotty";
+		FileWriter fstream = new FileWriter(outputFile);
+		BufferedWriter out = new BufferedWriter(fstream);
+		out.write("digraph graphname {\n");
+
+		// Accept states
+		String initialState = get_initial_state();
+		out.write("\tnode [shape = circle];\n");
+		out.write("\tsize=\"8,5\"\n");
+		for (String state : get_accept_states()) {
+			out.write("\t" + state + "[shape=doublecircle];\n");
 		}
-		
+
+		// Add transitions
+		for (String transition : transitions.keySet()) {
+			TreeSet<String> nextStates = transitions.get(transition);
+			String[] elements = transition.split("\\.");
+			String symbol = "EPSON";
+			String state = elements[0];
+			if (elements.length == 2) {
+				symbol = elements[1];
+			}
+			// Add dotty transitions
+			for (String nextState : nextStates) {
+				out.write("\t " + state + " -> " + nextState + " [label=\""
+						+ symbol + "\"];\n");
+			}
+		}
+		out.write("}");
+		out.close();
+
+		// Invoke dotty to draw
+		display_dotty(outputFile);
+	}
+
+	public void display_dotty(String fileName) {
+		try {
+
+			Process p = Runtime.getRuntime().exec(
+					"cmd /C graphviz\\bin\\dotty.exe " + fileName);
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					p.getInputStream()));
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				System.out.println(line);
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -95,11 +97,11 @@ public class ENFA {
 	public String get_initial_state() {
 		return initial_state;
 	}
-	
+
 	public Set<String> get_accept_states() {
 		return accept_states;
 	}
-	
+
 	private void set_accept_states(Set<String> accept_states)
 			throws InvalidStateException {
 		if (this.states.containsAll(accept_states)) {
@@ -154,7 +156,7 @@ public class ENFA {
 		String state = initial_state;
 		return matchRecursive(state, identifiers, 0);
 	}
-	
+
 	public boolean matchRecursive(String state, String[] identifiers, int index) {
 
 		if (accept_states.contains(state) && index == identifiers.length)
@@ -184,29 +186,29 @@ public class ENFA {
 		}
 	}
 
-	public TreeSet<String> step_forward(TreeSet<String> states, String identifier) {
+	public TreeSet<String> step_forward(TreeSet<String> states,
+			String identifier) {
 		TreeSet<String> children = new TreeSet<String>();
-		
-		String[] identifiers = {identifier};
-		for (String state: states) {
+
+		String[] identifiers = { identifier };
+		for (String state : states) {
 			try {
 				isEpsilon = false;
-				TreeSet<String> nextStates = get_next_state(state, identifiers, 0);
+				TreeSet<String> nextStates = get_next_state(state, identifiers,
+						0);
 				if (isEpsilon) {
 					children.addAll(step_forward(nextStates, identifier));
-				}
-				else {
+				} else {
 					children.addAll(nextStates);
 				}
-				
-			}
-			catch (DeadState d) {
+
+			} catch (DeadState d) {
 				d.printStackTrace();
 			}
 		}
-		
+
 		return children;
-		
+
 	}
 
 	private TreeSet<String> get_next_state(String state, String[] identifiers,
@@ -248,8 +250,8 @@ public class ENFA {
 	}
 
 	/*
-	 * AINDA N�O EST� TESTADO ... Mas d�em uma vista de olhos para ver se � isto
-	 * que se tem que fazer :)
+	 * AINDA N�O EST� TESTADO ... Mas d�em uma vista de olhos para ver se
+	 * � isto que se tem que fazer :)
 	 */
 	public static ENFA operator_and(ENFA enfa1, ENFA enfa2) {
 
@@ -305,7 +307,8 @@ public class ENFA {
 			try {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
-				System.out.println("Problemas transições entre enfa1 e enfa2");
+				System.out
+						.println("Problemas transições entre enfa1 e enfa2");
 				e.printStackTrace();
 			}
 		}
@@ -687,74 +690,100 @@ public class ENFA {
 		prefix_index++;
 		return temp;
 	}
-	
-	public TreeSet<String> get_closure(Set<String> statesCombined, String identifier) {
-		TreeSet<String> children = new TreeSet<String>();
-		
-		for(String state : statesCombined) {
-			children.addAll(get_closure(state, identifier));
-		}
-		
-		return children;
-	}
-	
-	public TreeSet<String> get_closure(String state, String identifier) {
-		TreeSet<String> children = new TreeSet<String>();
-		children.add(state);
-		
-		TreeSet<String> transitionsState = transitions.get(state + "."
-				+ identifier);
-		TreeSet<String> transitionsEps = transitions.get(state + "." + "");
-
-		for (String dest : transitionsState) {
-			children.add(dest);
-		}
-
-		for (String dest : transitionsEps) {
-			children.addAll(get_closure(dest, identifier));
-		}
-
-		return children;
-	}
-	
-	TreeSet<TreeSet<String>> get_combinations(Set<String> statesToCombine, int n_elements) {
-		
-		if(statesToCombine.size() < n_elements)
-			return null;
-		
-		else {
-			TreeSet<TreeSet<String>> temp = new TreeSet<TreeSet<String>>();
-			//TODO: Fazer combinacoes
-			return temp;
-		}
-	}
 
 	public DFA optimize() {
-		
+
 		DFA optimization = new DFA();
-		
-		//index by alphabet and then by state
-		HashMap<String, HashMap<TreeSet<String>, TreeSet<String>>> table = new HashMap<String, HashMap<TreeSet<String>, TreeSet<String>>>();
-		
-		for(String symbol: alphabet) {
-			HashMap<TreeSet<String>, TreeSet<String>> temp = new HashMap<TreeSet<String>, TreeSet<String>>();
-			
-			for(int i = 0; i < states.size(); i++) {
-				TreeSet<TreeSet<String>> combs = get_combinations(states, i);
-				
-				for(TreeSet<String> statesCombined: combs) {
-					TreeSet<String> destinations = get_closure(statesCombined, symbol);
-					
-					temp.put(statesCombined, destinations);
+
+		// index by state and then by alphabet
+		HashMap<String, HashMap<String, TreeSet<String>>> enfaTable = getTable();
+
+		// index by set of states
+		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
+
+		TreeSet<TreeSet<String>> notFilled = new TreeSet<TreeSet<String>>();
+
+		// first states
+		for (String current_state : enfaTable.keySet()) {
+
+			// state index
+			TreeSet<String> statesLeft = new TreeSet<String>();
+			statesLeft.add(current_state);
+
+			// alphabet index
+			HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
+
+			for (String symbol : alphabet) {
+				TreeSet<String> dest_states = get_element_table(enfaTable,
+						current_state, symbol);
+				TreeSet<String> temp_states = new TreeSet<String>();
+
+				for (String state_eps : dest_states) {
+					TreeSet<String> eps_states = get_element_table(enfaTable,
+							state_eps, EPSILON);
+					temp_states.addAll(eps_states);
 				}
-				
-				
+
+				dest_states.addAll(temp_states);
+				resultRight.put(symbol, dest_states);
 			}
-			
-			table.put(symbol, temp);
+
+			dfaTable.put(statesLeft, resultRight);
 		}
 
-		
+		while (!notFilled.isEmpty()) {
+
+			TreeSet<TreeSet<String>> setsGenerated = new TreeSet<TreeSet<String>>();
+
+			for (TreeSet<String> setToTest : setsGenerated) {
+				if (!dfaTable.containsKey(setToTest)) {
+					notFilled.add(setToTest);
+				}
+			}
+		}
+
+		return optimization;
+	}
+
+	private HashMap<String, HashMap<String, TreeSet<String>>> getTable() {
+
+		// state, then symbol, result states
+
+		HashMap<String, HashMap<String, TreeSet<String>>> table = new HashMap<String, HashMap<String, TreeSet<String>>>();
+
+		for (String currentState : states) {
+			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
+
+			for (String symbol : alphabet) {
+				TreeSet<String> resultStates = new TreeSet<String>();
+				resultStates.addAll(transitions
+						.get(currentState + "." + symbol));
+				line.put(symbol, resultStates);
+			}
+
+			TreeSet<String> epsilonStates = new TreeSet<String>();
+			epsilonStates.addAll(transitions.get(currentState + "." + EPSILON));
+
+			line.put(EPSILON, epsilonStates);
+
+			table.put(currentState, line);
+		}
+
+		return table;
+	}
+
+	private TreeSet<String> get_element_table(
+			HashMap<String, HashMap<String, TreeSet<String>>> table,
+			String state, String symbol) {
+
+		if (table.containsKey(state)) {
+			HashMap<String, TreeSet<String>> line = table.get(state);
+
+			if (line.containsKey(symbol)) {
+				return line.get(symbol);
+			}
+		}
+
 		return null;
 	}
 }
