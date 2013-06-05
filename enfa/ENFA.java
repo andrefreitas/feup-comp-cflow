@@ -1,5 +1,7 @@
 package enfa;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,6 +36,28 @@ public class ENFA {
 		this.alphabet = new TreeSet<String>();
 		this.transitions = new HashMap<String, TreeSet<String>>();
 		this.accept_states = new TreeSet<String>();
+	}
+	
+	public void drawGraph() throws Exception{
+		 FileWriter fstream = new FileWriter("automata.dotty");
+		 BufferedWriter out = new BufferedWriter(fstream);
+		 out.write("digraph graphname {\n");
+		 for(String transition : transitions.keySet()){
+			 TreeSet<String> nextStates = transitions.get(transition);
+			 String [] elements = transition.split("\\.");
+			 String symbol = "EPSON";
+			 String state = elements[0];
+			 if (elements.length==2){
+				 symbol = elements[1];
+			 }
+			 // Add dotty transitions
+			 for(String nextState: nextStates){
+				 out.write("\t " + state + " -> " + nextState +" [label=\""+ symbol +"\"];\n");
+			 }
+		 }
+		 out.write("}");
+	
+		 out.close();
 	}
 
 	public String get_initial_state() {
