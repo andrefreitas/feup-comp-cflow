@@ -1,7 +1,10 @@
 package enfa;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,9 +42,20 @@ public class ENFA {
 	}
 	
 	public void drawGraph() throws Exception{
-		 FileWriter fstream = new FileWriter("automata.dotty");
+		 String outputFile = "automata.dotty";
+		 FileWriter fstream = new FileWriter(outputFile);
 		 BufferedWriter out = new BufferedWriter(fstream);
 		 out.write("digraph graphname {\n");
+		 
+		 // Accept states
+		 String initialState = get_initial_state();
+		 out.write("\tnode [shape = circle];\n");
+		 out.write("\tsize=\"8,5\"\n");
+		 for(String state: get_accept_states()){
+			 out.write("\t" + state + "[shape=doublecircle];\n");
+		 }
+		 
+		 // Add transitions
 		 for(String transition : transitions.keySet()){
 			 TreeSet<String> nextStates = transitions.get(transition);
 			 String [] elements = transition.split("\\.");
@@ -56,8 +70,26 @@ public class ENFA {
 			 }
 		 }
 		 out.write("}");
-	
 		 out.close();
+		 
+		 // Invoke dotty to draw
+		 display_dotty(outputFile);
+	}
+	
+	public void display_dotty(String fileName){
+		try{
+		
+		Process p = Runtime.getRuntime().exec("cmd /C graphviz\\bin\\dotty.exe " + fileName);
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				p.getInputStream()));
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			System.out.println(line);
+		}
+		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String get_initial_state() {
