@@ -713,11 +713,19 @@ public class ENFA {
 		for (String symbol : alphabet) {
 			TreeSet<String> dest_states = get_element_table(enfaTable,
 					initial_state, symbol);
+			
+			if(dest_states == null)
+				dest_states = new TreeSet<String>();
+			
 			TreeSet<String> temp_states = new TreeSet<String>();
 
 			for (String state_eps : dest_states) {
 				TreeSet<String> eps_states = get_element_table(enfaTable,
 						state_eps, EPSILON);
+				
+				if(eps_states == null)
+					eps_states = new TreeSet<String>();
+				
 				temp_states.addAll(eps_states);
 			}
 
@@ -752,13 +760,25 @@ public class ENFA {
 				TreeSet<String> epsStates = new TreeSet<String>();
 
 				for (String stateExploring : setExplore) {
-					dstates.addAll(get_element_table(enfaTable, stateExploring,
-							symbol));
+					
+					TreeSet<String> elements = get_element_table(enfaTable, stateExploring,
+							symbol);
+					
+					if(elements == null)
+						elements = new TreeSet<String>();
+					
+					dstates.addAll(elements);
 				}
 
 				for (String dState : dstates) {
-					epsStates.addAll(get_element_table(enfaTable, dState,
-							EPSILON));
+					
+					TreeSet<String> elements = get_element_table(enfaTable, dState,
+							EPSILON);
+					
+					if(elements == null)
+						elements = new TreeSet<String>();
+					
+					epsStates.addAll(elements);
 				}
 
 				dstates.addAll(epsStates);
@@ -812,10 +832,13 @@ public class ENFA {
 			
 			for(String symbol : alphabet) {
 				TreeSet<String> dest = get_element_tableDFA(dfaTable, statesTemp, symbol);
-				String destStateDFA = dfaMapping.get(dest);
 				
-				String[] tempTransition = {dfaMapping.get(statesTemp), symbol, destStateDFA};
-				transitionsDFA.add(tempTransition);
+				if(dest != null) {
+					String destStateDFA = dfaMapping.get(dest);
+					
+					String[] tempTransition = {dfaMapping.get(statesTemp), symbol, destStateDFA};
+					transitionsDFA.add(tempTransition);
+				}
 			}
 			
 		}
