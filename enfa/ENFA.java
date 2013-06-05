@@ -695,15 +695,13 @@ public class ENFA {
 
 	public DFA optimize() {
 
-		DFA optimization = new DFA();
-
 		// index by state and then by alphabet
 		HashMap<String, HashMap<String, TreeSet<String>>> enfaTable = getTable();
 
 		// index by set of states
 		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
 
-		Queue<TreeSet<String>> notFilled = new LinkedList<TreeSet<String>>();
+		TreeSet<TreeSet<String>> notFilled = new TreeSet<TreeSet<String>>();
 		// initial state
 		// state index
 		TreeSet<String> statesLeft = new TreeSet<String>();
@@ -729,8 +727,8 @@ public class ENFA {
 		}
 
 		dfaTable.put(statesLeft, resultRight);
-		
-		//other states
+
+		// other states
 		for (TreeSet<String> statesF : resultRight.values()) {
 			if (!dfaTable.containsKey(statesF)) {
 				notFilled.add(statesF);
@@ -740,29 +738,37 @@ public class ENFA {
 		while (!notFilled.isEmpty()) {
 
 			TreeSet<TreeSet<String>> setsGenerated = new TreeSet<TreeSet<String>>();
-			
-			//obter um conjunto de estados para analisar
-			
+
+			// estados por simbolo
+			HashMap<String, TreeSet<String>> statesSymbol = new HashMap<String, TreeSet<String>>();
+
+			// obter um conjunto de estados para analisar
 			TreeSet<String> setExplore = notFilled.first();
 			notFilled.remove(setExplore);
-			
-			// continuar aqui
-			for(String symbol: alphabet) {
+
+			// para cada id
+			for (String symbol : alphabet) {
 				TreeSet<String> dstates = new TreeSet<String>();
 				TreeSet<String> epsStates = new TreeSet<String>();
-				
-				for(String stateExploring : setExplore) {
-					dstates.addAll(get_element_table(enfaTable, stateExploring, symbol));
+
+				for (String stateExploring : setExplore) {
+					dstates.addAll(get_element_table(enfaTable, stateExploring,
+							symbol));
 				}
-				
-				for(String dState: dstates) {
-					epsStates.addAll(get_element_table(enfaTable, dState, symbol));
+
+				for (String dState : dstates) {
+					epsStates.addAll(get_element_table(enfaTable, dState,
+							EPSILON));
 				}
-				
+
 				dstates.addAll(epsStates);
-				
-				//falta gerar elemento e colocar na tabela
+				dstates.addAll(setExplore);
+
+				statesSymbol.put(symbol, dstates);
+				notFilled.add(dstates);
 			}
+
+			dfaTable.put(setExplore, statesSymbol);
 
 			for (TreeSet<String> setToTest : setsGenerated) {
 				if (!dfaTable.containsKey(setToTest)) {
@@ -771,7 +777,73 @@ public class ENFA {
 			}
 		}
 
+		HashMap<TreeSet<String>, String> dfaMapping = new HashMap<TreeSet<String>, String>();
+
+		int i = 0;
+
+		Set<String> statesDFA = new TreeSet<String>();
+		Set<String> alphabetDFA = alphabet;
+		String initial_stateDFA = "EMPTY";
+		Set<String> accept_statesDFA = new TreeSet<String>();
+		ArrayList<String[]> transitionsDFA = new ArrayList<String[]>();
+
+		TreeSet<String> initialDFA = new TreeSet<String>();
+		initialDFA.add(initial_state);
+
+		// detect states and prepare basic DFA operations
+		for (TreeSet<String> set : dfaTable.keySet()) {
+			dfaMapping.put(set, "q" + i);
+			statesDFA.add("q" + i);
+
+			if (set.containsAll(initialDFA)) {
+				initial_stateDFA = "q" + i;
+			}
+
+			for (String stateTest : accept_states) {
+				if (set.contains(stateTest)) {
+					accept_statesDFA.add("q" + i);
+				}
+			}
+			
+			i++;
+		}
+		
+		for(TreeSet<String> statesTemp : dfaMapping.keySet()) {
+			
+			for(String symbol : alphabet) {
+				TreeSet<String> dest = get_element_tableDFA(dfaTable, statesTemp, symbol);
+				String destStateDFA = dfaMapping.get(dest);
+				
+				String[] tempTransition = {dfaMapping.get(statesTemp), symbol, destStateDFA};
+				transitionsDFA.add(tempTransition);
+			}
+			
+		}
+		
+		DFA optimization = null;
+		
+		try {
+			optimization = new DFA(statesDFA, alphabetDFA, transitionsDFA, initial_stateDFA, accept_statesDFA);
+		} catch (Exception e) {
+			System.out.println("ERROR WHEN OPTIMIZING ENFA");
+		}
+
 		return optimization;
+	}
+
+	private TreeSet<String> get_element_tableDFA(
+			HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> table,
+			TreeSet<String> statesTemp, String symbol) {
+		
+		if(table.containsKey(statesTemp)) {
+			HashMap<String, TreeSet<String>> line = table.get(statesTemp);
+
+			if (line.containsKey(symbol)) {
+				return line.get(symbol);
+			}
+		}
+
+		return null;
 	}
 
 	private HashMap<String, HashMap<String, TreeSet<String>>> getTable() {
