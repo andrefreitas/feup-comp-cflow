@@ -1,0 +1,13 @@
+digraph graphname {
+	node [shape = circle];
+	size="8,5"
+	q1[shape=doublecircle];
+	q6[shape=doublecircle];
+	 q5 -> q6 [label="EPSON"];
+	 q0 -> q1 [label="a"];
+	 q0 -> q2 [label="a"];
+	 q3 -> q4 [label="b"];
+	 q4 -> q0 [label="EPSON"];
+	 q4 -> q5 [label="EPSON"];
+	 q2 -> q3 [label="EPSON"];
+}
