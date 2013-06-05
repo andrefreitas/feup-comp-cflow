@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -701,39 +703,66 @@ public class ENFA {
 		// index by set of states
 		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
 
-		TreeSet<TreeSet<String>> notFilled = new TreeSet<TreeSet<String>>();
+		Queue<TreeSet<String>> notFilled = new LinkedList<TreeSet<String>>();
+		// initial state
+		// state index
+		TreeSet<String> statesLeft = new TreeSet<String>();
+		statesLeft.add(initial_state);
 
-		// first states
-		for (String current_state : enfaTable.keySet()) {
+		// alphabet index
+		HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
 
-			// state index
-			TreeSet<String> statesLeft = new TreeSet<String>();
-			statesLeft.add(current_state);
+		for (String symbol : alphabet) {
+			TreeSet<String> dest_states = get_element_table(enfaTable,
+					initial_state, symbol);
+			TreeSet<String> temp_states = new TreeSet<String>();
 
-			// alphabet index
-			HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
-
-			for (String symbol : alphabet) {
-				TreeSet<String> dest_states = get_element_table(enfaTable,
-						current_state, symbol);
-				TreeSet<String> temp_states = new TreeSet<String>();
-
-				for (String state_eps : dest_states) {
-					TreeSet<String> eps_states = get_element_table(enfaTable,
-							state_eps, EPSILON);
-					temp_states.addAll(eps_states);
-				}
-
-				dest_states.addAll(temp_states);
-				resultRight.put(symbol, dest_states);
+			for (String state_eps : dest_states) {
+				TreeSet<String> eps_states = get_element_table(enfaTable,
+						state_eps, EPSILON);
+				temp_states.addAll(eps_states);
 			}
 
-			dfaTable.put(statesLeft, resultRight);
+			dest_states.addAll(temp_states);
+			dest_states.add(initial_state); // add itself
+			resultRight.put(symbol, dest_states);
+		}
+
+		dfaTable.put(statesLeft, resultRight);
+		
+		//other states
+		for (TreeSet<String> statesF : resultRight.values()) {
+			if (!dfaTable.containsKey(statesF)) {
+				notFilled.add(statesF);
+			}
 		}
 
 		while (!notFilled.isEmpty()) {
 
 			TreeSet<TreeSet<String>> setsGenerated = new TreeSet<TreeSet<String>>();
+			
+			//obter um conjunto de estados para analisar
+			
+			TreeSet<String> setExplore = notFilled.first();
+			notFilled.remove(setExplore);
+			
+			// continuar aqui
+			for(String symbol: alphabet) {
+				TreeSet<String> dstates = new TreeSet<String>();
+				TreeSet<String> epsStates = new TreeSet<String>();
+				
+				for(String stateExploring : setExplore) {
+					dstates.addAll(get_element_table(enfaTable, stateExploring, symbol));
+				}
+				
+				for(String dState: dstates) {
+					epsStates.addAll(get_element_table(enfaTable, dState, symbol));
+				}
+				
+				dstates.addAll(epsStates);
+				
+				//falta gerar elemento e colocar na tabela
+			}
 
 			for (TreeSet<String> setToTest : setsGenerated) {
 				if (!dfaTable.containsKey(setToTest)) {
