@@ -189,17 +189,18 @@ public class ENFA {
 	}
 
 	public TreeSet<String> step_forward(TreeSet<String> states,
-			String identifier) {
+			String[] identifiers) {
 		TreeSet<String> children = new TreeSet<String>();
 
-		String[] identifiers = { identifier };
+
 		for (String state : states) {
 			try {
 				isEpsilon = false;
 				TreeSet<String> nextStates = get_next_state(state, identifiers,
 						0);
 				if (isEpsilon) {
-					children.addAll(step_forward(nextStates, identifier));
+					children.addAll(nextStates);
+					children.addAll(step_forward(nextStates, identifiers));
 				} else {
 					children.addAll(nextStates);
 				}
@@ -795,7 +796,8 @@ public class ENFA {
 		for(String state : states) {
 			st.clear();
 			st.add(state);
-			transiction = step_forward(st,EPSILON);
+			String[] identifiers = new String[0];
+			transiction = step_forward(st,identifiers);
 			transiction.add(state);
 			eClose.put(state, transiction);
 		}
