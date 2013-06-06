@@ -52,7 +52,7 @@ public class Cflow {
 		InputStream is = new ByteArrayInputStream(regex.getBytes());
 		RegexParser parser = new RegexParser(is);
 		Cflow.automata = parser.getENFA();
-		Cflow.automataOpt = Cflow.automata.optimize();
+		//Cflow.automataOpt = Cflow.automata.optimize();
 		Cflow.states.add(Cflow.automata.get_initial_state());
 	}
 

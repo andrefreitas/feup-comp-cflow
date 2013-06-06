@@ -701,7 +701,7 @@ public class ENFA {
 		// index by set of states
 		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
 
-		TreeSet<TreeSet<String>> notFilled = new TreeSet<TreeSet<String>>();
+		Queue<TreeSet<String>> notFilled = new LinkedList<TreeSet<String>>();
 		// initial state
 		// state index
 		TreeSet<String> statesLeft = new TreeSet<String>();
@@ -711,90 +711,46 @@ public class ENFA {
 		HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
 
 		for (String symbol : alphabet) {
-			TreeSet<String> dest_states = get_element_table(enfaTable,
-					initial_state, symbol);
+			TreeSet<String> lsymbol = step_forward(statesLeft, symbol);
+			lsymbol.addAll(statesLeft);
+			resultRight.put(symbol, lsymbol);
 			
-			if(dest_states == null)
-				dest_states = new TreeSet<String>();
-			
-			TreeSet<String> temp_states = new TreeSet<String>();
-
-			for (String state_eps : dest_states) {
-				TreeSet<String> eps_states = get_element_table(enfaTable,
-						state_eps, EPSILON);
-				
-				if(eps_states == null)
-					eps_states = new TreeSet<String>();
-				
-				temp_states.addAll(eps_states);
-			}
-
-			dest_states.addAll(temp_states);
-			dest_states.add(initial_state); // add itself
-			resultRight.put(symbol, dest_states);
+			if(!dfaTable.containsKey(lsymbol) && !statesLeft.equals(lsymbol))
+				notFilled.add(lsymbol);
 		}
-
+		
+		//epsilon
+		TreeSet<String> dest_states = step_forward(statesLeft, EPSILON);
+		dest_states.addAll(statesLeft);
+		resultRight.put(EPSILON, dest_states);
+		
+		if(!dfaTable.containsKey(dest_states) && !statesLeft.equals(dest_states))
+			notFilled.add(dest_states);
+		
 		dfaTable.put(statesLeft, resultRight);
 
-		// other states
-		for (TreeSet<String> statesF : resultRight.values()) {
-			if (!dfaTable.containsKey(statesF)) {
-				notFilled.add(statesF);
-			}
-		}
-
 		while (!notFilled.isEmpty()) {
-
-			TreeSet<TreeSet<String>> setsGenerated = new TreeSet<TreeSet<String>>();
-
-			// estados por simbolo
-			HashMap<String, TreeSet<String>> statesSymbol = new HashMap<String, TreeSet<String>>();
-
-			// obter um conjunto de estados para analisar
-			TreeSet<String> setExplore = notFilled.first();
-			notFilled.remove(setExplore);
-
-			// para cada id
+			
+			TreeSet<String> current_states = notFilled.poll();
+			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
+			
+			
 			for (String symbol : alphabet) {
-				TreeSet<String> dstates = new TreeSet<String>();
-				TreeSet<String> epsStates = new TreeSet<String>();
-
-				for (String stateExploring : setExplore) {
-					
-					TreeSet<String> elements = get_element_table(enfaTable, stateExploring,
-							symbol);
-					
-					if(elements == null)
-						elements = new TreeSet<String>();
-					
-					dstates.addAll(elements);
-				}
-
-				for (String dState : dstates) {
-					
-					TreeSet<String> elements = get_element_table(enfaTable, dState,
-							EPSILON);
-					
-					if(elements == null)
-						elements = new TreeSet<String>();
-					
-					epsStates.addAll(elements);
-				}
-
-				dstates.addAll(epsStates);
-				dstates.addAll(setExplore);
-
-				statesSymbol.put(symbol, dstates);
-				notFilled.add(dstates);
+				TreeSet<String> lsymbol = step_forward(current_states, symbol);
+				lsymbol.addAll(current_states);
+				line.put(symbol, lsymbol);
+				
+				if(!dfaTable.containsKey(lsymbol) && !current_states.equals(lsymbol))
+					notFilled.add(lsymbol);
 			}
-
-			dfaTable.put(setExplore, statesSymbol);
-
-			for (TreeSet<String> setToTest : setsGenerated) {
-				if (!dfaTable.containsKey(setToTest)) {
-					notFilled.add(setToTest);
-				}
-			}
+			
+			
+			TreeSet<String> dest_statesEps = step_forward(current_states, EPSILON);
+			dest_statesEps.addAll(current_states);
+			line.put(EPSILON, dest_states);
+			
+			
+			dfaTable.put(current_states, line);
 		}
 
 		HashMap<TreeSet<String>, String> dfaMapping = new HashMap<TreeSet<String>, String>();
@@ -880,13 +836,20 @@ public class ENFA {
 
 			for (String symbol : alphabet) {
 				TreeSet<String> resultStates = new TreeSet<String>();
-				resultStates.addAll(transitions
-						.get(currentState + "." + symbol));
+				String key = currentState + "." + symbol;
+				if (transitions.containsKey(key)) {
+					resultStates.addAll(transitions.get(key));
+				}	
 				line.put(symbol, resultStates);
 			}
 
 			TreeSet<String> epsilonStates = new TreeSet<String>();
-			epsilonStates.addAll(transitions.get(currentState + "." + EPSILON));
+			
+			String key = currentState + "." + EPSILON;
+			if (transitions.containsKey(key)) {
+				epsilonStates.addAll(transitions.get(key));
+			}
+			
 
 			line.put(EPSILON, epsilonStates);
 
