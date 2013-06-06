@@ -63,7 +63,8 @@ public class Cflow {
 	}
 
 	public static void transition(String block) {
-		states = Cflow.automata.step_forward(Cflow.states, block);
+		String[] identifiers = { block };
+		states = Cflow.automata.step_forward(Cflow.states, identifiers);
 		if (states.isEmpty()) {
 			String[] message = { block, "failed" };
 			log.add(message);
