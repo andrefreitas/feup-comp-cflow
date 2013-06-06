@@ -16,7 +16,7 @@ public class test_optimize {
 
 	@Test
 	public void test() {
-		String regex = "A*.(B|C)\n";
+		String regex = "A*\n";
 		Cflow.start(regex);
 		Cflow.transition("A");
 		Cflow.show_result();

@@ -53,7 +53,12 @@ public class Cflow {
 		RegexParser parser = new RegexParser(is);
 		Cflow.automata = parser.getENFA();
 		Cflow.automataOpt = Cflow.automata.optimize();
-		Cflow.automataOpt.
+		try {
+			Cflow.automata.drawGraph();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Cflow.states.add(Cflow.automata.get_initial_state());
 	}
 

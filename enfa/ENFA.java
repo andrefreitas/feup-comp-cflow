@@ -712,7 +712,7 @@ public class ENFA {
 
 		for (String symbol : alphabet) {
 			TreeSet<String> lsymbol = step_forward(statesLeft, symbol);
-			lsymbol.addAll(statesLeft);
+			//lsymbol.addAll(statesLeft);
 			resultRight.put(symbol, lsymbol);
 			
 			if(!dfaTable.containsKey(lsymbol) && !statesLeft.equals(lsymbol))
@@ -721,7 +721,7 @@ public class ENFA {
 		
 		//epsilon
 		TreeSet<String> dest_states = step_forward(statesLeft, EPSILON);
-		dest_states.addAll(statesLeft);
+		//dest_states.addAll(statesLeft);
 		resultRight.put(EPSILON, dest_states);
 		
 		if(!dfaTable.containsKey(dest_states) && !statesLeft.equals(dest_states))
@@ -737,7 +737,7 @@ public class ENFA {
 			
 			for (String symbol : alphabet) {
 				TreeSet<String> lsymbol = step_forward(current_states, symbol);
-				lsymbol.addAll(current_states);
+				//lsymbol.addAll(current_states);
 				line.put(symbol, lsymbol);
 				
 				if(!dfaTable.containsKey(lsymbol) && !current_states.equals(lsymbol))
@@ -746,7 +746,7 @@ public class ENFA {
 			
 			
 			TreeSet<String> dest_statesEps = step_forward(current_states, EPSILON);
-			dest_statesEps.addAll(current_states);
+			//dest_statesEps.addAll(current_states);
 			line.put(EPSILON, dest_states);
 			
 			
