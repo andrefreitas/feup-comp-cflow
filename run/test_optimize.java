@@ -16,12 +16,10 @@ public class test_optimize {
 
 	@Test
 	public void test() {
-		String regex = "A.(B|C)\n";
-		InputStream is = new ByteArrayInputStream(regex.getBytes());
-		RegexParser r = new RegexParser(is);
-		
-		ENFA t = r.getENFA();
-		DFA opt = t.optimize();
+		String regex = "A*.(B|C)\n";
+		Cflow.start(regex);
+		Cflow.transition("A");
+		Cflow.show_result();
 		System.out.println("Over"); 
 		System.out.println("Ovasdsaer");
 	}

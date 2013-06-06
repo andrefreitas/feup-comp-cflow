@@ -205,7 +205,7 @@ public class ENFA {
 				}
 
 			} catch (DeadState d) {
-				d.printStackTrace();
+				
 			}
 		}
 
