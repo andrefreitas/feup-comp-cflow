@@ -218,42 +218,6 @@ public class TestENFA extends TestCase {
 		/* Test File content */
 	}
 	
-	public void test_get_table() throws Exception {
-		/* States */
-		Set<String> states = new TreeSet<String>();
-		states.add("q0");
-		states.add("q1");
-		states.add("q2");
-		states.add("q3");
-
-		/* Alphabet */
-		Set<String> alphabet = new TreeSet<String>();
-		alphabet.add("a");
-
-		/* Transitions */
-		ArrayList<String[]> transitions = new ArrayList<String[]>();
-
-		String[] t1 = { "q0", "", "q1" };
-		String[] t2 = { "q1", "a", "q2" };
-		String[] t3 = { "q2", "", "q3" };
-		
-		transitions.add(t1);
-		transitions.add(t2);
-		transitions.add(t3);
-		
-		/* Initial State */
-		String initial_state = "q0";
-
-		/* Accept States */
-		Set<String> accept_states = new TreeSet<String>();
-		accept_states.add("q3");
-
-		/* Create ENFA */
-		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
-				accept_states);
-		System.out.println(d1.get_enfa_table().toString());
-	}
-	
 	public void test_e_close() throws Exception {
 		/* States */
 		Set<String> states = new TreeSet<String>();
@@ -289,6 +253,43 @@ public class TestENFA extends TestCase {
 				accept_states);
 		d1.drawGraph();
 		System.out.println(d1.get_e_close().toString());
+	}
+	
+	public void test_dfa_table() throws Exception {
+		/* States */
+		Set<String> states = new TreeSet<String>();
+		states.add("q0");
+		states.add("q1");
+		states.add("q2");
+		states.add("q3");
+
+		/* Alphabet */
+		Set<String> alphabet = new TreeSet<String>();
+		alphabet.add("a");
+
+		/* Transitions */
+		ArrayList<String[]> transitions = new ArrayList<String[]>();
+
+		String[] t1 = { "q0", "", "q1" };
+		String[] t2 = { "q1", "a", "q2" };
+		String[] t3 = { "q2", "", "q3" };
+		
+		transitions.add(t1);
+		transitions.add(t2);
+		transitions.add(t3);
+		
+		/* Initial State */
+		String initial_state = "q0";
+
+		/* Accept States */
+		Set<String> accept_states = new TreeSet<String>();
+		accept_states.add("q3");
+
+		/* Create ENFA */
+		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
+				accept_states);
+		d1.drawGraph();
+		System.out.println(d1.get_dfa_table(d1.get_e_close()).toString());
 	}
 	
 	

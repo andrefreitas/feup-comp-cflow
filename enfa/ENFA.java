@@ -810,33 +810,36 @@ public class ENFA {
 //	}
 	
 	public DFA optimize() {
-		HashMap<String,TreeSet<String>> enfaTable = get_enfa_table();
 		HashMap<String, TreeSet<String>> eClose = get_e_close();
-		HashMap<String,String> dfaTable = get_dfa_table(enfaTable,eClose);
+		HashMap<String,String> dfaTable = get_dfa_table(eClose);
 		return null;	
 	}
 
-	public HashMap<String, String> get_dfa_table(HashMap<String, TreeSet<String>> enfaTable,HashMap<String, TreeSet<String>> eClose) {
+	public HashMap<String, String> get_dfa_table(HashMap<String, TreeSet<String>> eClose) {
 		HashMap<String, String> dfaTable = new HashMap<String, String>();
 		TreeSet<String> statesKnown = new TreeSet<String>();
 		LinkedList<String> statesToDo = new LinkedList<String>();
-		String initialState = initial_state;
+		String initialState = "";
 		String state;
 		String newState = "";
 		
 		for(String st : eClose.get(initial_state)) {
-			initialState += "-" + st;
+			if(initialState.isEmpty())
+				initialState = st;
+			else
+				initialState += "-" + st;
 		}
 		
 		statesKnown.add(initialState);
 		statesToDo.add(initialState);
-		state = initialState;
 		
 		do {
+			state = statesToDo.removeFirst();
 			for(String letter: alphabet) {
 				TreeSet<String> nextStates = new TreeSet<String>();
 				for(String st : state.split("-")) {
-					nextStates.addAll(transitions.get(st + "." + letter));
+					if(transitions.get(st + "." + letter) != null)
+							nextStates.addAll(transitions.get(st + "." + letter));
 				}
 				
 				for(String nextState : nextStates) {
@@ -850,11 +853,14 @@ public class ENFA {
 						newState += "-" + nextState;
 				}
 				
-				statesKnown.add(newState);
-				statesToDo.add(newState);
+				if(!statesKnown.contains(newState)) {
+					statesKnown.add(newState);
+					statesToDo.add(newState);
+				}
+					
+				if(newState != "")
+					dfaTable.put(state + "." + letter, newState);
 				newState = "";
-				
-				dfaTable.put(state + "." + letter, newState);
 			}
 			
 		}while(!statesToDo.isEmpty());
@@ -874,20 +880,6 @@ public class ENFA {
 			eClose.put(state, transiction);
 		}
 		return eClose;
-	}
-
-	public HashMap<String, TreeSet<String>> get_enfa_table() {
-		HashMap<String, TreeSet<String>> enfaTable = new HashMap<String, TreeSet<String>>();
-		TreeSet<String> transiction;
-		for(String state : states) {
-			for(String letter : alphabet) {
-				transiction = transitions.get(state + "." + letter);
-				enfaTable.put(state + "." + letter, transiction);
-			}
-			transiction = transitions.get(state + ".");
-			enfaTable.put(state + ".", transiction);
-		}
-		return enfaTable;
 	}
 
 //	private TreeSet<String> get_element_tableDFA(
