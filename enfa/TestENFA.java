@@ -262,6 +262,7 @@ public class TestENFA extends TestCase {
 		states.add("q1");
 		states.add("q2");
 		states.add("q3");
+		states.add("q4");
 
 		/* Alphabet */
 		Set<String> alphabet = new TreeSet<String>();
@@ -271,24 +272,85 @@ public class TestENFA extends TestCase {
 		ArrayList<String[]> transitions = new ArrayList<String[]>();
 
 		String[] t1 = { "q0", "", "q1" };
-		String[] t2 = { "q1", "a", "q2" };
-		String[] t3 = { "q2", "", "q3" };
+		String[] t2 = { "q1", "", "q2" };
+		String[] t3 = { "q2", "a", "q3" };
+		String[] t4 = { "q3", "", "q4" };
 		
 		transitions.add(t1);
 		transitions.add(t2);
 		transitions.add(t3);
+		transitions.add(t4);
 		
 		/* Initial State */
 		String initial_state = "q0";
 
 		/* Accept States */
 		Set<String> accept_states = new TreeSet<String>();
-		accept_states.add("q3");
+		accept_states.add("q4");
 
 		/* Create ENFA */
 		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
 				accept_states);
 		d1.drawGraph();
+
+		System.out.println(d1.get_e_close());
+		System.out.println(d1.get_dfa_table(d1.get_e_close()).toString());
+	}
+	
+	public void test_dfa_table_more_complex() throws Exception {
+		/* States */
+		Set<String> states = new TreeSet<String>();
+		states.add("q0");
+		states.add("q1");
+		states.add("q2");
+		states.add("q3");
+		states.add("q4");
+		states.add("q5");
+
+		/* Alphabet */
+		Set<String> alphabet = new TreeSet<String>();
+		alphabet.add("+");
+		alphabet.add("*");
+		alphabet.add("9");
+		
+
+		/* Transitions */
+		ArrayList<String[]> transitions = new ArrayList<String[]>();
+
+		String[] t1 = { "q0", "", "q1" };
+		String[] t2 = { "q0", "+", "q1" };
+		String[] t3 = { "q1", "*", "q2" };
+		String[] t4 = { "q1", "9", "q1" };
+		String[] t5 = { "q1", "9", "q4" };
+		String[] t6 = { "q2", "9", "q3" };
+		String[] t7 = { "q3", "", "q5" };
+		String[] t8 = { "q3", "9", "q3" };
+		String[] t9 = { "q4", "*", "q3" };
+		
+		transitions.add(t1);
+		transitions.add(t2);
+		transitions.add(t3);
+		transitions.add(t4);
+		transitions.add(t5);
+		transitions.add(t6);
+		transitions.add(t7);
+		transitions.add(t8);
+		transitions.add(t9);
+		
+		
+		/* Initial State */
+		String initial_state = "q0";
+
+		/* Accept States */
+		Set<String> accept_states = new TreeSet<String>();
+		accept_states.add("q5");
+
+		/* Create ENFA */
+		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
+				accept_states);
+		d1.drawGraph();
+
+		System.out.println(d1.get_e_close());
 		System.out.println(d1.get_dfa_table(d1.get_e_close()).toString());
 	}
 	

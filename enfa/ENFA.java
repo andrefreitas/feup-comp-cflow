@@ -812,7 +812,7 @@ public class ENFA {
 	public DFA optimize() {
 		HashMap<String, TreeSet<String>> eClose = get_e_close();
 		HashMap<String,String> dfaTable = get_dfa_table(eClose);
-		return null;	
+		return null;
 	}
 
 	public HashMap<String, String> get_dfa_table(HashMap<String, TreeSet<String>> eClose) {
