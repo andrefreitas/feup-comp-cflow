@@ -37,6 +37,7 @@ public class TestDFA extends TestCase {
 		assertFalse(d1.match("j.h.g.r.u.i.g.h.e.r.u.i.h"));
 		assertFalse(d1.match(""));
 		assertFalse(d1.match("a.a.a.a.b.b.b.b.b.b"));
+		d1.drawGraph();
 	}
 
 	public void test_invalid_trans() throws Exception {
@@ -178,4 +179,5 @@ public class TestDFA extends TestCase {
 
 		
 	}
+
 }
