@@ -71,7 +71,6 @@ public class DFA {
 	}
 
 	public void display_dotty(String fileName) {
-		System.out.println("teste");
 		try {
 
 			Process p = Runtime.getRuntime().exec(
