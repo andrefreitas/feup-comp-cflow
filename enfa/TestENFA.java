@@ -251,7 +251,7 @@ public class TestENFA extends TestCase {
 		/* Create ENFA */
 		ENFA d1 = new ENFA(states, alphabet, transitions, initial_state,
 				accept_states);
-		System.out.println(d1.get_table().toString());
+		System.out.println(d1.get_enfa_table().toString());
 	}
 	
 	public void test_e_close() throws Exception {

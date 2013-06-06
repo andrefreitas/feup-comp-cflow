@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -811,9 +810,56 @@ public class ENFA {
 //	}
 	
 	public DFA optimize() {
-		HashMap<String,TreeSet<String>> enfaTable = get_table();
+		HashMap<String,TreeSet<String>> enfaTable = get_enfa_table();
 		HashMap<String, TreeSet<String>> eClose = get_e_close();
+		HashMap<String,String> dfaTable = get_dfa_table(enfaTable,eClose);
 		return null;	
+	}
+
+	public HashMap<String, String> get_dfa_table(HashMap<String, TreeSet<String>> enfaTable,HashMap<String, TreeSet<String>> eClose) {
+		HashMap<String, String> dfaTable = new HashMap<String, String>();
+		TreeSet<String> statesKnown = new TreeSet<String>();
+		LinkedList<String> statesToDo = new LinkedList<String>();
+		String initialState = initial_state;
+		String state;
+		String newState = "";
+		
+		for(String st : eClose.get(initial_state)) {
+			initialState += "-" + st;
+		}
+		
+		statesKnown.add(initialState);
+		statesToDo.add(initialState);
+		state = initialState;
+		
+		do {
+			for(String letter: alphabet) {
+				TreeSet<String> nextStates = new TreeSet<String>();
+				for(String st : state.split("-")) {
+					nextStates.addAll(transitions.get(st + "." + letter));
+				}
+				
+				for(String nextState : nextStates) {
+					nextStates.addAll(eClose.get(nextState));
+				}
+				
+				for(String nextState : nextStates) {
+					if(newState.isEmpty())
+						newState = nextState;
+					else
+						newState += "-" + nextState;
+				}
+				
+				statesKnown.add(newState);
+				statesToDo.add(newState);
+				newState = "";
+				
+				dfaTable.put(state + "." + letter, newState);
+			}
+			
+		}while(!statesToDo.isEmpty());
+		
+		return dfaTable;
 	}
 
 	public HashMap<String, TreeSet<String>> get_e_close() {
@@ -830,7 +876,7 @@ public class ENFA {
 		return eClose;
 	}
 
-	public HashMap<String, TreeSet<String>> get_table() {
+	public HashMap<String, TreeSet<String>> get_enfa_table() {
 		HashMap<String, TreeSet<String>> enfaTable = new HashMap<String, TreeSet<String>>();
 		TreeSet<String> transiction;
 		for(String state : states) {
