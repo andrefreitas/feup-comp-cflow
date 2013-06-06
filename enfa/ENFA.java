@@ -693,184 +693,218 @@ public class ENFA {
 		return temp;
 	}
 
+//	public DFA optimize() {
+//
+//		// index by state and then by alphabet
+//		HashMap<String, HashMap<String, TreeSet<String>>> enfaTable = getTable();
+//
+//		// index by set of states
+//		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
+//
+//		Queue<TreeSet<String>> notFilled = new LinkedList<TreeSet<String>>();
+//		// initial state
+//		// state index
+//		TreeSet<String> statesLeft = new TreeSet<String>();
+//		statesLeft.add(initial_state);
+//
+//		// alphabet index
+//		HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
+//
+//		for (String symbol : alphabet) {
+//			TreeSet<String> lsymbol = step_forward(statesLeft, symbol);
+//			//lsymbol.addAll(statesLeft);
+//			resultRight.put(symbol, lsymbol);
+//			
+//			if(!dfaTable.containsKey(lsymbol) && !statesLeft.equals(lsymbol))
+//				notFilled.add(lsymbol);
+//		}
+//		
+//		//epsilon
+//		TreeSet<String> dest_states = step_forward(statesLeft, EPSILON);
+//		//dest_states.addAll(statesLeft);
+//		resultRight.put(EPSILON, dest_states);
+//		
+//		if(!dfaTable.containsKey(dest_states) && !statesLeft.equals(dest_states))
+//			notFilled.add(dest_states);
+//		
+//		dfaTable.put(statesLeft, resultRight);
+//
+//		while (!notFilled.isEmpty()) {
+//			
+//			TreeSet<String> current_states = notFilled.poll();
+//			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
+//			
+//			
+//			for (String symbol : alphabet) {
+//				TreeSet<String> lsymbol = step_forward(current_states, symbol);
+//				//lsymbol.addAll(current_states);
+//				line.put(symbol, lsymbol);
+//				
+//				if(!dfaTable.containsKey(lsymbol) && !current_states.equals(lsymbol))
+//					notFilled.add(lsymbol);
+//			}
+//			
+//			
+//			TreeSet<String> dest_statesEps = step_forward(current_states, EPSILON);
+//			//dest_statesEps.addAll(current_states);
+//			line.put(EPSILON, dest_states);
+//			
+//			
+//			dfaTable.put(current_states, line);
+//		}
+//
+//		HashMap<TreeSet<String>, String> dfaMapping = new HashMap<TreeSet<String>, String>();
+//
+//		int i = 0;
+//
+//		Set<String> statesDFA = new TreeSet<String>();
+//		Set<String> alphabetDFA = alphabet;
+//		String initial_stateDFA = "EMPTY";
+//		Set<String> accept_statesDFA = new TreeSet<String>();
+//		ArrayList<String[]> transitionsDFA = new ArrayList<String[]>();
+//
+//		TreeSet<String> initialDFA = new TreeSet<String>();
+//		initialDFA.add(initial_state);
+//
+//		// detect states and prepare basic DFA operations
+//		for (TreeSet<String> set : dfaTable.keySet()) {
+//			dfaMapping.put(set, "q" + i);
+//			statesDFA.add("q" + i);
+//
+//			if (set.containsAll(initialDFA)) {
+//				initial_stateDFA = "q" + i;
+//			}
+//
+//			for (String stateTest : accept_states) {
+//				if (set.contains(stateTest)) {
+//					accept_statesDFA.add("q" + i);
+//				}
+//			}
+//			
+//			i++;
+//		}
+//		
+//		for(TreeSet<String> statesTemp : dfaMapping.keySet()) {
+//			
+//			for(String symbol : alphabet) {
+//				TreeSet<String> dest = get_element_tableDFA(dfaTable, statesTemp, symbol);
+//				
+//				if(dest != null) {
+//					String destStateDFA = dfaMapping.get(dest);
+//					
+//					String[] tempTransition = {dfaMapping.get(statesTemp), symbol, destStateDFA};
+//					transitionsDFA.add(tempTransition);
+//				}
+//			}
+//			
+//		}
+//		
+//		DFA optimization = null;
+//		
+//		try {
+//			optimization = new DFA(statesDFA, alphabetDFA, transitionsDFA, initial_stateDFA, accept_statesDFA);
+//		} catch (Exception e) {
+//			System.out.println("ERROR WHEN OPTIMIZING ENFA");
+//		}
+//
+//		return optimization;
+//	}
+	
 	public DFA optimize() {
-
-		// index by state and then by alphabet
-		HashMap<String, HashMap<String, TreeSet<String>>> enfaTable = getTable();
-
-		// index by set of states
-		HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> dfaTable = new HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>>();
-
-		Queue<TreeSet<String>> notFilled = new LinkedList<TreeSet<String>>();
-		// initial state
-		// state index
-		TreeSet<String> statesLeft = new TreeSet<String>();
-		statesLeft.add(initial_state);
-
-		// alphabet index
-		HashMap<String, TreeSet<String>> resultRight = new HashMap<String, TreeSet<String>>();
-
-		for (String symbol : alphabet) {
-			TreeSet<String> lsymbol = step_forward(statesLeft, symbol);
-			//lsymbol.addAll(statesLeft);
-			resultRight.put(symbol, lsymbol);
-			
-			if(!dfaTable.containsKey(lsymbol) && !statesLeft.equals(lsymbol))
-				notFilled.add(lsymbol);
-		}
-		
-		//epsilon
-		TreeSet<String> dest_states = step_forward(statesLeft, EPSILON);
-		//dest_states.addAll(statesLeft);
-		resultRight.put(EPSILON, dest_states);
-		
-		if(!dfaTable.containsKey(dest_states) && !statesLeft.equals(dest_states))
-			notFilled.add(dest_states);
-		
-		dfaTable.put(statesLeft, resultRight);
-
-		while (!notFilled.isEmpty()) {
-			
-			TreeSet<String> current_states = notFilled.poll();
-			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
-			
-			
-			for (String symbol : alphabet) {
-				TreeSet<String> lsymbol = step_forward(current_states, symbol);
-				//lsymbol.addAll(current_states);
-				line.put(symbol, lsymbol);
-				
-				if(!dfaTable.containsKey(lsymbol) && !current_states.equals(lsymbol))
-					notFilled.add(lsymbol);
-			}
-			
-			
-			TreeSet<String> dest_statesEps = step_forward(current_states, EPSILON);
-			//dest_statesEps.addAll(current_states);
-			line.put(EPSILON, dest_states);
-			
-			
-			dfaTable.put(current_states, line);
-		}
-
-		HashMap<TreeSet<String>, String> dfaMapping = new HashMap<TreeSet<String>, String>();
-
-		int i = 0;
-
-		Set<String> statesDFA = new TreeSet<String>();
-		Set<String> alphabetDFA = alphabet;
-		String initial_stateDFA = "EMPTY";
-		Set<String> accept_statesDFA = new TreeSet<String>();
-		ArrayList<String[]> transitionsDFA = new ArrayList<String[]>();
-
-		TreeSet<String> initialDFA = new TreeSet<String>();
-		initialDFA.add(initial_state);
-
-		// detect states and prepare basic DFA operations
-		for (TreeSet<String> set : dfaTable.keySet()) {
-			dfaMapping.put(set, "q" + i);
-			statesDFA.add("q" + i);
-
-			if (set.containsAll(initialDFA)) {
-				initial_stateDFA = "q" + i;
-			}
-
-			for (String stateTest : accept_states) {
-				if (set.contains(stateTest)) {
-					accept_statesDFA.add("q" + i);
-				}
-			}
-			
-			i++;
-		}
-		
-		for(TreeSet<String> statesTemp : dfaMapping.keySet()) {
-			
-			for(String symbol : alphabet) {
-				TreeSet<String> dest = get_element_tableDFA(dfaTable, statesTemp, symbol);
-				
-				if(dest != null) {
-					String destStateDFA = dfaMapping.get(dest);
-					
-					String[] tempTransition = {dfaMapping.get(statesTemp), symbol, destStateDFA};
-					transitionsDFA.add(tempTransition);
-				}
-			}
-			
-		}
-		
-		DFA optimization = null;
-		
-		try {
-			optimization = new DFA(statesDFA, alphabetDFA, transitionsDFA, initial_stateDFA, accept_statesDFA);
-		} catch (Exception e) {
-			System.out.println("ERROR WHEN OPTIMIZING ENFA");
-		}
-
-		return optimization;
+		HashMap<String,TreeSet<String>> enfaTable = get_table();
+		HashMap<String, TreeSet<String>> eClose = get_e_close();
+		return null;	
 	}
 
-	private TreeSet<String> get_element_tableDFA(
-			HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> table,
-			TreeSet<String> statesTemp, String symbol) {
-		
-		if(table.containsKey(statesTemp)) {
-			HashMap<String, TreeSet<String>> line = table.get(statesTemp);
-
-			if (line.containsKey(symbol)) {
-				return line.get(symbol);
-			}
+	public HashMap<String, TreeSet<String>> get_e_close() {
+		HashMap<String,TreeSet<String>> eClose = new HashMap<String,TreeSet<String>>();
+		TreeSet<String> transiction;
+		TreeSet<String> st = new TreeSet<String>();
+		for(String state : states) {
+			st.clear();
+			st.add(state);
+			transiction = step_forward(st,EPSILON);
+			transiction.add(state);
+			eClose.put(state, transiction);
 		}
-
-		return null;
+		return eClose;
 	}
 
-	private HashMap<String, HashMap<String, TreeSet<String>>> getTable() {
-
-		// state, then symbol, result states
-
-		HashMap<String, HashMap<String, TreeSet<String>>> table = new HashMap<String, HashMap<String, TreeSet<String>>>();
-
-		for (String currentState : states) {
-			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
-
-			for (String symbol : alphabet) {
-				TreeSet<String> resultStates = new TreeSet<String>();
-				String key = currentState + "." + symbol;
-				if (transitions.containsKey(key)) {
-					resultStates.addAll(transitions.get(key));
-				}	
-				line.put(symbol, resultStates);
+	public HashMap<String, TreeSet<String>> get_table() {
+		HashMap<String, TreeSet<String>> enfaTable = new HashMap<String, TreeSet<String>>();
+		TreeSet<String> transiction;
+		for(String state : states) {
+			for(String letter : alphabet) {
+				transiction = transitions.get(state + "." + letter);
+				enfaTable.put(state + "." + letter, transiction);
 			}
-
-			TreeSet<String> epsilonStates = new TreeSet<String>();
-			
-			String key = currentState + "." + EPSILON;
-			if (transitions.containsKey(key)) {
-				epsilonStates.addAll(transitions.get(key));
-			}
-			
-
-			line.put(EPSILON, epsilonStates);
-
-			table.put(currentState, line);
+			transiction = transitions.get(state + ".");
+			enfaTable.put(state + ".", transiction);
 		}
-
-		return table;
+		return enfaTable;
 	}
 
-	private TreeSet<String> get_element_table(
-			HashMap<String, HashMap<String, TreeSet<String>>> table,
-			String state, String symbol) {
-
-		if (table.containsKey(state)) {
-			HashMap<String, TreeSet<String>> line = table.get(state);
-
-			if (line.containsKey(symbol)) {
-				return line.get(symbol);
-			}
-		}
-
-		return null;
-	}
+//	private TreeSet<String> get_element_tableDFA(
+//			HashMap<TreeSet<String>, HashMap<String, TreeSet<String>>> table,
+//			TreeSet<String> statesTemp, String symbol) {
+//		
+//		if(table.containsKey(statesTemp)) {
+//			HashMap<String, TreeSet<String>> line = table.get(statesTemp);
+//
+//			if (line.containsKey(symbol)) {
+//				return line.get(symbol);
+//			}
+//		}
+//
+//		return null;
+//	}
+//
+//	private HashMap<String, HashMap<String, TreeSet<String>>> getTable() {
+//
+//		// state, then symbol, result states
+//
+//		HashMap<String, HashMap<String, TreeSet<String>>> table = new HashMap<String, HashMap<String, TreeSet<String>>>();
+//
+//		for (String currentState : states) {
+//			HashMap<String, TreeSet<String>> line = new HashMap<String, TreeSet<String>>();
+//
+//			for (String symbol : alphabet) {
+//				TreeSet<String> resultStates = new TreeSet<String>();
+//				String key = currentState + "." + symbol;
+//				if (transitions.containsKey(key)) {
+//					resultStates.addAll(transitions.get(key));
+//				}	
+//				line.put(symbol, resultStates);
+//			}
+//
+//			TreeSet<String> epsilonStates = new TreeSet<String>();
+//			
+//			String key = currentState + "." + EPSILON;
+//			if (transitions.containsKey(key)) {
+//				epsilonStates.addAll(transitions.get(key));
+//			}
+//			
+//
+//			line.put(EPSILON, epsilonStates);
+//
+//			table.put(currentState, line);
+//		}
+//
+//		return table;
+//	}
+//
+//	private TreeSet<String> get_element_table(
+//			HashMap<String, HashMap<String, TreeSet<String>>> table,
+//			String state, String symbol) {
+//
+//		if (table.containsKey(state)) {
+//			HashMap<String, TreeSet<String>> line = table.get(state);
+//
+//			if (line.containsKey(symbol)) {
+//				return line.get(symbol);
+//			}
+//		}
+//
+//		return null;
+//	}
 }
