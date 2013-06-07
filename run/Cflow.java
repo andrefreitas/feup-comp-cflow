@@ -35,7 +35,7 @@ public class Cflow {
 		myFile.run(args);
 		
 		try {
-			Process p = Runtime.getRuntime().exec("cmd /C javac -cp .;cflow.jar *_cflow.java");
+			Process p = Runtime.getRuntime().exec("cmd /C javac -cp .;cflow.jar *.java");
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			String line = null;
@@ -71,7 +71,10 @@ public class Cflow {
 	}
 
 	public static void transition(String block) {
-		Cflow.stream += block;
+		if(stream.isEmpty())
+			Cflow.stream += block;
+		else
+			Cflow.stream += "." + block;
 		try {
 			current_state = Cflow.optimized_automaton.get_next_state(current_state, block);
 			String[] message = { block, "passed" };
@@ -89,10 +92,10 @@ public class Cflow {
 		}
 		
 		if(Cflow.optimized_automaton.match(stream)) {
-			System.out.println("Flow accepted.");
+			System.out.println("\nFlow accepted.");
 			return;
 		}
-		System.out.println("Flow rejected.");
+		System.out.println("\nFlow rejected.");
 		System.out.println("\n=========================");
 	}
 }

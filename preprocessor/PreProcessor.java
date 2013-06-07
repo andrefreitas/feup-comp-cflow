@@ -21,12 +21,12 @@ public class PreProcessor {
 		regex = args[0];
 		for(int i = 1; i < args.length; i++) {
 			if(args[i].lastIndexOf('\\') >= 0)
-				fileName = args[i].substring(args[i].lastIndexOf('\\'));
+				fileName = args[i].substring(args[i].lastIndexOf('\\')+1);
 			else
 				fileName = args[i];
 			className = fileName.substring(0, fileName.lastIndexOf('.'));
 			String input = read_file(args[i]);
-			fileName = className + "_cflow.java";
+			fileName = className + ".java";
 			write_new_file(fileName, input);
 		}
 	}
@@ -109,11 +109,11 @@ public class PreProcessor {
 			
 		}
 		else if(ignore_white_spaces(line).indexOf(className) >= 0) {
-			line = line.substring(0,line.indexOf(className)) + className + "_cflow" + line.substring(line.indexOf(className)+className.length());
+			line = line.substring(0,line.indexOf(className)) + className  + line.substring(line.indexOf(className)+className.length());
 			returnValue += line + "\n";
 		}
 		else if (line.contains("main")) {
-			Cflow.main_class = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
+			Cflow.main_class = fileName.substring(0, fileName.lastIndexOf('.'));
 			int block = 1;
 			returnValue += line + "\n";
 			if(line.contains("{"))
