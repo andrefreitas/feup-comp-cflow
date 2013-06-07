@@ -25,6 +25,11 @@ public class Cflow {
 	public static String stream = "";
 
 	public static void main(String args[]) {
+		if(args.length < 2) {
+			System.out.println("Use: java -jar cflow <REGULAR EXPRESSION> <FILE1> <FILE2> ...");
+			return;
+		}
+		
 		// (1) Convert file
 		PreProcessor myFile = new PreProcessor();
 		myFile.run(args);
@@ -78,6 +83,7 @@ public class Cflow {
 	}
 
 	public static void show_result() {
+		System.out.println("\n===== CFLOW RESULTS =====\n");
 		for (String[] message : log) {
 			System.out.println(message[0] + ": " + message[1]);
 		}
@@ -87,5 +93,6 @@ public class Cflow {
 			return;
 		}
 		System.out.println("Flow rejected.");
+		System.out.println("\n=========================");
 	}
 }

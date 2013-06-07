@@ -1,7 +1,0 @@
-digraph graphname {
-	node [shape = circle];
-	size="8,5"
-	q2[shape=doublecircle];
-	 q2 -> q2 [label="b"];
-	 q1 -> q2 [label="a"];
-}

@@ -16,3 +16,14 @@
 /RegexParserTokenManager.class
 /RegexParserTreeConstants.class
 /testparser.class
+/JJTRegexParserState.java
+/Node.java
+/ParseException.java
+/RegexParser.java
+/RegexParserConstants.java
+/RegexParserTokenManager.java
+/SimpleCharStream.java
+/Token.java
+/TokenMgrError.java
+/RegexParser.jj
+/RegexParserTreeConstants.java

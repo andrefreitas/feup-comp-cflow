@@ -111,34 +111,34 @@ public class SimpleNode implements Node {
 
 		switch(op) {
 		case(OR):
-			System.out.println("OR");
+			//System.out.println("OR");
 		break;
 		case(AND):
-			System.out.println("AND");
+			//System.out.println("AND");
 		break;
 		case(ID):
-			System.out.println("ID: " + identifier);
+			//System.out.println("ID: " + identifier);
 		default:
 			break;
 		}
 		switch(timesType) {
 		case(PLUS):
-			System.out.println("ONCE OR MORE TIMES");
+			//System.out.println("ONCE OR MORE TIMES");
 		break;
 		case(STAR):
-			System.out.println("ZERO OR MORE TIMES");
+			//System.out.println("ZERO OR MORE TIMES");
 		break;
 		case(QUESTIONM):
-			System.out.println("ZERO OR ONCE");
+			//System.out.println("ZERO OR ONCE");
 		break;
 		case(TIMES):
-			System.out.println("TIMES {" + timLeft + "}");
+			//System.out.println("TIMES {" + timLeft + "}");
 		break;
 		case(TIMESLEFT):
-			System.out.println("TIMESLEFT {" + timLeft + ",}");
+			//System.out.println("TIMESLEFT {" + timLeft + ",}");
 		break;
 		case(TIMESINT):
-			System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
+			//System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
 		break;
 		default:
 			break;
@@ -157,7 +157,7 @@ public class SimpleNode implements Node {
 		ENFA tempENFA = new ENFA();
 		switch(op) {
 		case(ID): {
-			System.out.println("ID: " + identifier);
+			//System.out.println("ID: " + identifier);
 			Set<String> states = new TreeSet<String>();
 			states.add("q0");
 			states.add("q1");
@@ -185,36 +185,36 @@ public class SimpleNode implements Node {
 			switch(timesType) {
 				case(PLUS): {
 					tempENFA = ENFA.operator_plus(tempENFA);
-					System.out.println("ONCE OR MORE TIMES");
+					//System.out.println("ONCE OR MORE TIMES");
 				}
 
 				break;
 				case(STAR): {
 					tempENFA = ENFA.operator_star(tempENFA);
-					System.out.println("ZERO OR MORE TIMES");
+					//System.out.println("ZERO OR MORE TIMES");
 				}
 
 				break;
 				case(QUESTIONM): {
 					tempENFA = ENFA.operator_questionm(tempENFA);
-					System.out.println("ZERO OR ONCE");
+					//System.out.println("ZERO OR ONCE");
 				}
 
 				break;
 				case(TIMES): {
 					tempENFA = ENFA.operator_times(tempENFA, timLeft);
-					System.out.println("TIMES {" + timLeft + "}");
+					//System.out.println("TIMES {" + timLeft + "}");
 				}
 
 				break;
 				case(TIMESLEFT): {
 					tempENFA = ENFA.operator_timesleft(tempENFA, timLeft);
-					System.out.println("TIMESLEFT {" + timLeft + ",}");
+					//System.out.println("TIMESLEFT {" + timLeft + ",}");
 				}
 				break;
 				case(TIMESINT): {
 					tempENFA = ENFA.operator_timesint(tempENFA, timLeft, timRight);
-					System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
+					//System.out.println("TIMESINT {" + timLeft + "," + timRight + "}");
 				}
 
 				break;
@@ -236,7 +236,7 @@ public class SimpleNode implements Node {
 						case(OR): {
 							isOp = true;
 							if (i == 0) {
-								System.out.println("OR");
+								//System.out.println("OR");
 								tempENFA = n.parseENFA();
 							}
 							else {
@@ -249,7 +249,7 @@ public class SimpleNode implements Node {
 						case(AND): {
 							isOp = true;
 							if (i == 0) {
-								System.out.println("AND");
+								//System.out.println("AND");
 								tempENFA = n.parseENFA();
 							}
 							else {

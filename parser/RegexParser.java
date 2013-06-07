@@ -66,7 +66,6 @@ public class RegexParser/*@bgen(jjtree)*/implements RegexParserTreeConstants, Re
       jj_consume_token(NLINE);
            jjtree.closeNodeScope(jjtn000, true);
            jjtc000 = false;
-                System.out.println("ok");
                 {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {

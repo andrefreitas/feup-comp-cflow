@@ -106,7 +106,7 @@ SimpleNode Start() :
          }
 /*@egen*/
          {
-                System.out.println("ok");
+              
                 return jjtn000;
         }/*@bgen(jjtree)*/
   } catch (Throwable jjte000) {

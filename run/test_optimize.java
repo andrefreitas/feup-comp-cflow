@@ -20,8 +20,7 @@ public class test_optimize {
 		Cflow.start(regex);
 		Cflow.transition("A");
 		Cflow.show_result();
-		System.out.println("Over"); 
-		System.out.println("Ovasdsaer");
+		
 	}
 
 }
