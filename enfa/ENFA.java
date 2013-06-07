@@ -252,10 +252,6 @@ public class ENFA {
 		}
 	}
 
-	/*
-	 * AINDA N�O EST� TESTADO ... Mas d�em uma vista de olhos para ver se
-	 * � isto que se tem que fazer :)
-	 */
 	public static ENFA operator_and(ENFA enfa1, ENFA enfa2) {
 
 		ENFA ret = new ENFA();
@@ -297,7 +293,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial AND!");
+			System.out.println("Problems with initial transition AND");
 			e.printStackTrace();
 		}
 
@@ -311,7 +307,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e enfa2");
+						.println("Problems between enfa1 and enfa2 transitions");
 				e.printStackTrace();
 			}
 		}
@@ -327,7 +323,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa2 e end state");
+						.println("Problems between enfa2 and end state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -376,7 +372,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition1);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -385,7 +381,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition2);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -400,7 +396,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e end state");
+						.println("Problems between enfa1 and end state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -414,7 +410,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa2 e end state");
+						.println("Problems between enfa2 and end state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -449,7 +445,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -466,7 +462,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e end state");
+						.println("Problems between enfa1 and end state transitions");
 				e.printStackTrace();
 			}
 
@@ -477,7 +473,7 @@ public class ENFA {
 				ret.add_transition(transition_t2);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e initial state");
+						.println("Problems between enfa1 and initial state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -487,7 +483,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startToEndTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -521,7 +517,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -538,7 +534,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e end state");
+						.println("Problems between enfa1 and end state transitions");
 				e.printStackTrace();
 			}
 
@@ -549,7 +545,7 @@ public class ENFA {
 				ret.add_transition(transition_t2);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e initial state");
+						.println("Problems between enfa1 and initial state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -584,7 +580,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -601,7 +597,7 @@ public class ENFA {
 				ret.add_transition(transition_t);
 			} catch (InvalidTransitionException e) {
 				System.out
-						.println("Problemas transições entre enfa1 e end state");
+						.println("Problems between enfa1 and end state transitions");
 				e.printStackTrace();
 			}
 		}
@@ -611,7 +607,7 @@ public class ENFA {
 		try {
 			ret.add_transition(startToEndTransition);
 		} catch (InvalidTransitionException e) {
-			System.out.println("Problemas transição inicial OR!");
+			System.out.println("Problems with initial transition OR");
 			e.printStackTrace();
 		}
 
@@ -710,12 +706,12 @@ public class ENFA {
 		String[] t;
 		for(String state : dfaStates) {
 			for(String letter : alphabet) {
-				String transiction = dfaTable.get(state + "." + letter);
-				if(transiction != null) {
+				String transition = dfaTable.get(state + "." + letter);
+				if(transition != null) {
 					t = new String[3];
 					t[0] = state;
 					t[1] = letter;
-					t[2] =  transiction;
+					t[2] =  transition;
 					dfaTransitions.add(t);
 				}
 			}
@@ -791,15 +787,15 @@ public class ENFA {
 
 	public HashMap<String, TreeSet<String>> get_e_close() {
 		HashMap<String,TreeSet<String>> eClose = new HashMap<String,TreeSet<String>>();
-		TreeSet<String> transiction;
+		TreeSet<String> transition;
 		TreeSet<String> st = new TreeSet<String>();
 		for(String state : states) {
 			st.clear();
 			st.add(state);
 			String[] identifiers = new String[0];
-			transiction = step_forward(st,identifiers);
-			transiction.add(state);
-			eClose.put(state, transiction);
+			transition = step_forward(st,identifiers);
+			transition.add(state);
+			eClose.put(state, transition);
 		}
 		return eClose;
 	}

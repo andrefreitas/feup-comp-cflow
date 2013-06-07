@@ -113,7 +113,7 @@ public class PreProcessor {
 			returnValue += line + "\n";
 		}
 		else if (line.contains("main")) {
-			Cflow.mainClass = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
+			Cflow.main_class = fileName.substring(0, fileName.lastIndexOf('.')) + "_cflow";
 			int block = 1;
 			returnValue += line + "\n";
 			if(line.contains("{"))

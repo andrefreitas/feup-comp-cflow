@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 import dfa.DFA;
+import dfa.DeadState;
 
 import parser.RegexParser;
 import parser.SimpleNode;
@@ -16,11 +17,12 @@ import enfa.ENFA;
 
 
 public class Cflow {
-	public static ENFA automata = new ENFA();
-	public static DFA automataOpt;
-	public static TreeSet<String> states = new TreeSet<String>();
+	public static ENFA automaton = new ENFA();
+	public static DFA optimized_automaton;
+	public static String current_state;
 	public static ArrayList<String[]> log = new ArrayList<String[]>();
-	public static String mainClass;
+	public static String main_class;
+	public static String stream = "";
 
 	public static void main(String args[]) {
 		// (1) Convert file
@@ -35,7 +37,7 @@ public class Cflow {
 			while ((line = in.readLine()) != null) {
 				System.out.println(line);
 			}
-			p = Runtime.getRuntime().exec("cmd /C java -cp .;cflow.jar " + Cflow.mainClass);
+			p = Runtime.getRuntime().exec("cmd /C java -cp .;cflow.jar " + Cflow.main_class);
 			in = new BufferedReader(new InputStreamReader(
 					p.getInputStream()));
 			line = null;
@@ -51,30 +53,26 @@ public class Cflow {
 		regex = regex + "\n";
 		InputStream is = new ByteArrayInputStream(regex.getBytes());
 		RegexParser parser = new RegexParser(is);
-		Cflow.automata = parser.getENFA();
+		Cflow.automaton = parser.getENFA();
+		
 		try {
-			Cflow.automataOpt = Cflow.automata.optimize();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			Cflow.automata.drawGraph();
+			Cflow.optimized_automaton = Cflow.automaton.optimize();
+			Cflow.optimized_automaton.drawGraph();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Cflow.states.add(Cflow.automata.get_initial_state());
+		
+		current_state = Cflow.optimized_automaton.get_initial_state();
 	}
 
 	public static void transition(String block) {
-		String[] identifiers = { block };
-		states = Cflow.automata.step_forward(Cflow.states, identifiers);
-		if (states.isEmpty()) {
-			String[] message = { block, "failed" };
-			log.add(message);
-		} else {
+		Cflow.stream += block;
+		try {
+			current_state = Cflow.optimized_automaton.get_next_state(current_state, block);
 			String[] message = { block, "passed" };
+			log.add(message);
+		} catch(DeadState ds) {
+			String[] message = { block, "failed" };
 			log.add(message);
 		}
 	}
@@ -83,16 +81,11 @@ public class Cflow {
 		for (String[] message : log) {
 			System.out.println(message[0] + ": " + message[1]);
 		}
-
-		for (String state : states) {
-			String[] identifiers = new String[0];
-			if (Cflow.automata.matchRecursive(state, identifiers, 0)) {
-				System.out.println("Flow accepted.");
-				return;
-			}
+		
+		if(Cflow.optimized_automaton.match(stream)) {
+			System.out.println("Flow accepted.");
+			return;
 		}
-
 		System.out.println("Flow rejected.");
-		return;
 	}
 }

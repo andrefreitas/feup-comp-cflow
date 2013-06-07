@@ -154,7 +154,7 @@ public class DFA {
 		return false;
 	}
 
-	private String get_next_state(String q1, String symbol) throws DeadState {
+	public String get_next_state(String q1, String symbol) throws DeadState {
 		String key = q1 + "." + symbol;
 		if (transitions.containsKey(key)) {
 			return transitions.get(key);
@@ -179,6 +179,10 @@ public class DFA {
 		} else {
 			throw new InvalidStateException();
 		}
+	}
+	
+	public String get_initial_state() {
+		return initial_state;
 	}
 
 }
